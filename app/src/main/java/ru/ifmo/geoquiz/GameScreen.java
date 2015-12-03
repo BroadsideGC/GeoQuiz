@@ -29,11 +29,15 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
     private StreetViewPanorama panorama = null;
 
     Button actionButton;
+    Button mapButton;
+    MapDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_screen);
+
+        dialog = new MapDialog();
 
         actionButton = (Button) findViewById(R.id.action);
         actionButton.setOnClickListener(new View.OnClickListener() {
@@ -42,18 +46,27 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
                 moveToRandomPoint();
             }
         });
+        mapButton = (Button) findViewById(R.id.map);
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.setMarkerCoordinates(curStage.getOriginalPoint());
+                dialog.show(getSupportFragmentManager(), "my_tag");
+            }
+        });
 
         /*
          * Тестовая игра
          */
         GeoSearch geo = GeoSearch.getInstance();
-        Country Germany = geo.getCountry("DE");
-        Country Poland = geo.getCountry("PL");
-        game = new Round(4, new Country[] {Germany, Poland});
+        Country Ukraine = geo.getCountry("UA");
+        game = new Round(4, new Country[]{Ukraine});
         curStage = game.nextStage();
 
         StreetViewPanoramaFragment streetViewPanoramaFragment = (StreetViewPanoramaFragment) getFragmentManager().findFragmentById(R.id.streetviewpanorama);
         streetViewPanoramaFragment.getStreetViewPanoramaAsync(this);
+
+
     }
 
     @Override
@@ -78,6 +91,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
                 System.out.println("Check...");
                 if (panorama.getLocation() != null && panorama.getLocation().links != null) {
                     Log.d(LOG_TAG, "Pano found in " + rndPoint.toString() + ". Original point " + panorama.getLocation().position);
+                    curStage.setOriginalPoint(panorama.getLocation().position);
                 } else {
                     Log.d(LOG_TAG, "No panos found in " + rndPoint.toString());
                     moveToRandomPoint();
