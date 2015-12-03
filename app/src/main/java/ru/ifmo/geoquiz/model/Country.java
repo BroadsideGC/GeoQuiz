@@ -11,15 +11,10 @@ public class Country implements Parcelable {
     private String ISOCode;
     private LatLngBounds boundaries;
 
-    public Country() {
-
-    }
-
     public Country(String name, String iso, LatLngBounds boundaries) {
         this.name = name;
         this.ISOCode = iso;
         this.boundaries = boundaries;
-
     }
 
     public String getName() {
@@ -55,9 +50,9 @@ public class Country implements Parcelable {
 
     // Parceling
     public Country(Parcel in) {
-        this.name = in.readString();
-        this.ISOCode = in.readString();
-        this.boundaries = in.readParcelable(LatLngBounds.class.getClassLoader());
+        name = in.readString();
+        ISOCode = in.readString();
+        boundaries = in.readParcelable(LatLngBounds.class.getClassLoader());
     }
 
     @Override
@@ -67,9 +62,9 @@ public class Country implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeString(this.ISOCode);
-        this.boundaries.writeToParcel(dest, flags);
+        dest.writeString(name);
+        dest.writeString(ISOCode);
+        boundaries.writeToParcel(dest, flags);
     }
 
     public static final Parcelable.Creator<Country> CREATOR = new Parcelable.Creator<Country>() {

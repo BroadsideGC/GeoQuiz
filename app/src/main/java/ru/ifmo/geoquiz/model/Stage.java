@@ -13,7 +13,7 @@ public class Stage implements Parcelable {
     private Country country;
 
     public Stage() {
-
+        pts = 0;
     }
 
     public Stage(LatLng originalPoint) {
@@ -75,10 +75,10 @@ public class Stage implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        this.originalPoint.writeToParcel(dest, flags);
-        this.userPoint.writeToParcel(dest, flags);
-        dest.writeInt(this.pts);
-        this.country.writeToParcel(dest, flags);
+        dest.writeParcelable(originalPoint, flags);
+        dest.writeParcelable(userPoint, flags);
+        dest.writeInt(pts);
+        dest.writeParcelable(country, flags);
     }
 
     public static final Parcelable.Creator<Stage> CREATOR = new Parcelable.Creator<Stage>() {

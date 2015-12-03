@@ -24,6 +24,7 @@ public class Round implements Parcelable {
         this.stagesCount = stagesCount;
         this.stages = new Stage[stagesCount];
         this.curStageIndex = -1;
+        this.score = 0;
 
         if (availableCountries.length > 0) {
             this.availableCountries = availableCountries;
