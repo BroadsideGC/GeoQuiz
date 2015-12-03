@@ -60,6 +60,10 @@ public class Round implements Parcelable {
         return availableCountries[randomIndex];
     }
 
+    public Integer getStagesRemainingCount() {
+        return stagesCount - curStageIndex - 1;
+    }
+
     // Parceling
     public Round(Parcel in) {
         stagesCount = in.readInt();

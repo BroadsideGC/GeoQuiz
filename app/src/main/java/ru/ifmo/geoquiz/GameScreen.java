@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.OnStreetViewPanoramaReadyCallback;
 import com.google.android.gms.maps.StreetViewPanorama;
@@ -27,10 +28,12 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
     private Round game;
     private Stage curStage;
     private StreetViewPanorama panorama = null;
+    private LatLng prevPoint = null;
 
     Button actionButton;
     Button mapButton;
     MapDialog dialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         setContentView(R.layout.activity_game_screen);
 
         dialog = new MapDialog();
+        dialog.setGameScreen(this);
 
         actionButton = (Button) findViewById(R.id.action);
         actionButton.setOnClickListener(new View.OnClickListener() {
@@ -50,35 +54,44 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.setMarkerCoordinates(curStage.getOriginalPoint());
-                dialog.show(getSupportFragmentManager(), "my_tag");
+                dialog.setOriginalCoordinates(curStage.getOriginalPoint());
+                dialog.show(getSupportFragmentManager(), "MapDialog");
             }
         });
 
-        /*
-         * Тестовая игра
-         */
-        GeoSearch geo = GeoSearch.getInstance();
-        Country Ukraine = geo.getCountry("UA");
-        game = new Round(4, new Country[]{Ukraine});
-        curStage = game.nextStage();
+        if (savedInstanceState == null) {
+            // Тестовая игра
+            GeoSearch geo = GeoSearch.getInstance();
+            Country Ukraine = geo.getCountry("UA");
+            game = new Round(4, new Country[]{Ukraine});
+        } else {
+            game = (Round) savedInstanceState.get("game");
+            curStage = game.getCurStage();
+            prevPoint = (LatLng) savedInstanceState.get("point");
+        }
 
         StreetViewPanoramaFragment streetViewPanoramaFragment = (StreetViewPanoramaFragment) getFragmentManager().findFragmentById(R.id.streetviewpanorama);
         streetViewPanoramaFragment.getStreetViewPanoramaAsync(this);
-
-
     }
 
     @Override
-    public Object onRetainCustomNonConfigurationInstance() {
-        return super.onRetainCustomNonConfigurationInstance();
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("game", game);
+        if (panorama.getLocation() != null && panorama.getLocation().links != null) {
+            outState.putParcelable("point", panorama.getLocation().position);
+        }
     }
 
     @Override
     public void onStreetViewPanoramaReady(final StreetViewPanorama panorama) {
         this.panorama = panorama;
         this.panorama.setStreetNamesEnabled(false);
-        moveToRandomPoint();
+        if (prevPoint != null) {
+            panorama.setPosition(prevPoint);
+        } else {
+            startNewStage();
+        }
     }
 
     public void moveToRandomPoint() {
@@ -100,5 +113,16 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         }, 500);
     }
 
+    public Stage getCurStage() {
+        return curStage;
+    }
 
+    public void startNewStage() {
+        if (game.getStagesRemainingCount() == 0) {
+            Toast.makeText(getApplicationContext(), "Game over. Your score: " + game.score(), Toast.LENGTH_LONG).show();
+        } else {
+            curStage = game.nextStage();
+            moveToRandomPoint();
+        }
+    }
 }
