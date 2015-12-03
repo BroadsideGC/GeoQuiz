@@ -1,10 +1,11 @@
 package ru.ifmo.geoquiz.model;
 
 import java.util.Random;
-
+import android.os.Parcel;
+import android.os.Parcelable;
 import ru.ifmo.geoquiz.utils.GeoSearch;
 
-public class Round {
+public class Round implements Parcelable {
 
     private static final Integer MAX_STAGES = 10;
 
@@ -22,7 +23,7 @@ public class Round {
         stagesCount = Math.min(stagesCount, MAX_STAGES);
         this.stagesCount = stagesCount;
         this.stages = new Stage[stagesCount];
-        this.curStageIndex = 0;
+        this.curStageIndex = -1;
 
         if (availableCountries.length > 0) {
             this.availableCountries = availableCountries;
@@ -36,10 +37,14 @@ public class Round {
     }
 
     public Stage nextStage() {
+        curStageIndex++;
         this.stages[curStageIndex] = new Stage();
         this.stages[curStageIndex].setCountry(chooseCountry());
-        curStageIndex++;
-        return this.stages[curStageIndex - 1];
+        return this.stages[curStageIndex];
+    }
+
+    public Stage getCurStage() {
+        return this.stages[curStageIndex];
     }
 
     public Integer score() {
@@ -55,5 +60,38 @@ public class Round {
         return availableCountries[randomIndex];
     }
 
+    // Parceling
+    public Round(Parcel in) {
+        stagesCount = in.readInt();
+        stages = in.createTypedArray(Stage.CREATOR);
+        curStageIndex = in.readInt();
+        score = in.readInt();
+        availableCountries = in.createTypedArray(Country.CREATOR);
+    }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(stagesCount);
+        dest.writeTypedArray(stages, flags);
+        dest.writeInt(curStageIndex);
+        dest.writeInt(score);
+        dest.writeTypedArray(availableCountries, flags);
+    }
+
+    public static final Parcelable.Creator<Round> CREATOR = new Parcelable.Creator<Round>() {
+        @Override
+        public Round createFromParcel(Parcel source) {
+            return new Round(source);
+        }
+
+        @Override
+        public Round[] newArray(int size) {
+            return new Round[size];
+        }
+    };
 }
