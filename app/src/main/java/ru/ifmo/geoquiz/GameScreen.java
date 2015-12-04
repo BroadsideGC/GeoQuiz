@@ -34,6 +34,8 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
     Button mapButton;
     MapDialog dialog;
 
+    Bundle dialogArguments;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,6 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         setContentView(R.layout.activity_game_screen);
 
         dialog = new MapDialog();
-        dialog.setGameScreen(this);
 
         actionButton = (Button) findViewById(R.id.action);
         actionButton.setOnClickListener(new View.OnClickListener() {
@@ -54,7 +55,11 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.setOriginalCoordinates(curStage.getOriginalPoint());
+                if (dialogArguments == null) {
+                    dialog.setOriginalCoordinates(curStage.getOriginalPoint());
+                } else {
+                    dialog.setArguments(dialogArguments);
+                }
                 dialog.show(getSupportFragmentManager(), "MapDialog");
             }
         });
@@ -78,8 +83,11 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("game", game);
-        if (panorama.getLocation() != null && panorama.getLocation().links != null) {
+        if (panorama != null && panorama.getLocation() != null && panorama.getLocation().links != null) {
             outState.putParcelable("point", panorama.getLocation().position);
+        }
+        if (dialogArguments != null) {
+            outState.putBundle("dialogArguments", dialogArguments);
         }
     }
 
@@ -118,6 +126,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
     }
 
     public void startNewStage() {
+        dialogArguments = null;
         if (game.getStagesRemainingCount() == 0) {
             Toast.makeText(getApplicationContext(), "Game over. Your score: " + game.score(), Toast.LENGTH_LONG).show();
         } else {
