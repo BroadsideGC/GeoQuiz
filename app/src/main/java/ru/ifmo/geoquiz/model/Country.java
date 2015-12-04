@@ -55,7 +55,6 @@ public class Country implements Parcelable {
         name = in.readString();
         ISOCode = in.readString();
         boundaries = in.readParcelable(LatLngBounds.class.getClassLoader());
-        //Log.i("fg", boundaries.toString());
     }
 
     @Override
@@ -67,7 +66,7 @@ public class Country implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(ISOCode);
-        boundaries.writeToParcel(dest, flags);
+        dest.writeParcelable(boundaries, flags);
     }
 
     public static final Parcelable.Creator<Country> CREATOR = new Parcelable.Creator<Country>() {
