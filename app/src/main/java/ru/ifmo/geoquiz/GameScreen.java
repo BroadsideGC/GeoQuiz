@@ -66,9 +66,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
 
         if (savedInstanceState == null) {
             // Тестовая игра
-            GeoSearch geo = GeoSearch.getInstance();
-            Country Ukraine = geo.getCountry("UA");
-            game = new Round(4, new Country[]{Ukraine});
+            game = getIntent().getParcelableExtra("gaem");
         } else {
             game = (Round) savedInstanceState.get("game");
             curStage = game.getCurStage();

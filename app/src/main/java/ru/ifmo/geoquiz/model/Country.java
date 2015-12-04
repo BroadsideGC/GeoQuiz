@@ -4,6 +4,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
 import java.util.Random;
 
 public class Country implements Parcelable {
@@ -53,6 +55,7 @@ public class Country implements Parcelable {
         name = in.readString();
         ISOCode = in.readString();
         boundaries = in.readParcelable(LatLngBounds.class.getClassLoader());
+        //Log.i("fg", boundaries.toString());
     }
 
     @Override

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">GeoQuiz</string>
     <string name="title_activity_game_screen">Map</string>
+    <string name="title_activity_main_menu">MainMenu</string>
 </resources>
