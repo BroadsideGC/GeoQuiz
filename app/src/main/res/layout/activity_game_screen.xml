@@ -1,19 +1,25 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/streetviewpanorama"
-    android:name="com.google.android.gms.maps.StreetViewPanoramaFragment"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="ru.ifmo.geoquiz.GameScreen">
+    android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/map"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left|top"
-        android:text="Map"
-        android:enabled="false"
-        android:padding="10dp"
-        android:layout_marginTop="20dp"
-        android:paddingRight="50dp" />
-</fragment>
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/streetviewpanorama"
+        android:name="com.google.android.gms.maps.StreetViewPanoramaFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="ru.ifmo.geoquiz.GameScreen">
+
+        <Button
+            android:id="@+id/map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|top"
+            android:layout_marginTop="20dp"
+            android:enabled="false"
+            android:padding="10dp"
+            android:paddingRight="50dp"
+            android:text="Map" />
+    </fragment>
+</FrameLayout>
