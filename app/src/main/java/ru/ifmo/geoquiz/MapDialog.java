@@ -22,6 +22,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.Map;
 
@@ -80,6 +82,10 @@ public class MapDialog extends DialogFragment {
                     if (map != null && userCoordinates != null) {
                         map.addMarker(new MarkerOptions().position(originalCoordinates));
                         map.addMarker(new MarkerOptions().position(userCoordinates));
+
+                        PolylineOptions line = new PolylineOptions().add(originalCoordinates).add(userCoordinates);
+                        map.addPolyline(line);
+
                         isStageEnd = true;
                         confirmAnswer.setText("Next");
                     }
@@ -114,15 +120,20 @@ public class MapDialog extends DialogFragment {
         if (getArguments() != null) {
             CameraPosition camPos = getArguments().getParcelable("cameraPosition");
             userCoordinates = getArguments().getParcelable("userCoordinates");
-            isStageEnd = getArguments().getBoolean("isStageEnd");
             if (map != null) {
                 if (userCoordinates != null) {
                     map.addMarker(new MarkerOptions().position(userCoordinates));
                 }
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
             }
-            if (isStageEnd) {
+            if (getArguments().getBoolean("isStageEnd")) {
+                isStageEnd = true;
                 map.addMarker(new MarkerOptions().position(originalCoordinates));
+                map.addMarker(new MarkerOptions().position(userCoordinates));
+
+                PolylineOptions line = new PolylineOptions().add(originalCoordinates).add(userCoordinates);
+                map.addPolyline(line);
+                
                 confirmAnswer.setText("Next");
             }
         }
