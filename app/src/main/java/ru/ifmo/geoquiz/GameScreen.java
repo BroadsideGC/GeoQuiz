@@ -1,5 +1,6 @@
 package ru.ifmo.geoquiz;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -66,7 +67,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
 
         if (savedInstanceState == null) {
             // Тестовая игра
-            game = getIntent().getParcelableExtra("gaem");
+            game = getIntent().getExtras().getParcelable("gaem");
         } else {
             game = (Round) savedInstanceState.get("game");
             curStage = game.getCurStage();
@@ -127,6 +128,9 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         dialogArguments = null;
         if (game.getStagesRemainingCount() == 0) {
             Toast.makeText(getApplicationContext(), "Game over. Your score: " + game.score(), Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, EndGame.class);
+            intent.putExtra("score", game.score());
+            startActivity(intent);
         } else {
             curStage = game.nextStage();
             moveToRandomPoint();

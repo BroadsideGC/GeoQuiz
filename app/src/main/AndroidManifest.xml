@@ -44,7 +44,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ChooseMenu"></activity>
+        <activity android:name=".ChooseMenu" />
+        <activity android:name=".EndGame"></activity>
     </application>
 
 </manifest>

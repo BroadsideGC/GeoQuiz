@@ -50,7 +50,6 @@ public class ChooseMenu extends Activity {
         Round game = new Round(1, new Country[]{GeoSearch.getInstance().getCountry(isoCodes[id])});
         intent.putExtra("gaem", game);
         //Log.i(LOG_TAG);
-        Round game1 = intent.getExtras().getParcelable("gaem");
         startActivity(intent);
     }
     @Override
