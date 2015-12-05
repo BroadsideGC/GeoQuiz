@@ -2,6 +2,7 @@ package ru.ifmo.geoquiz;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -14,21 +15,18 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.games.Game;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-
-import java.util.Map;
 
 
 public class MapDialog extends DialogFragment {
+    private static final String LOG_TAG = "MapDialog";
+
     // Фрагмент с картой
     private SupportMapFragment fragment;
     // Карта
@@ -51,14 +49,6 @@ public class MapDialog extends DialogFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            originalCoordinates = getArguments().getParcelable("originalCoordinates");
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         return inflater.inflate(R.layout.fragment_map_dialog, container, false);
@@ -67,6 +57,14 @@ public class MapDialog extends DialogFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        if (getArguments() != null) {
+            restoreMarkers(getArguments());
+        } else {
+            if (savedInstanceState != null) {
+                restoreMarkers(savedInstanceState.getBundle("state"));
+            }
+        }
 
         confirmAnswer = (Button) getDialog().findViewById(R.id.confirm);
         confirmAnswer.setOnClickListener(new View.OnClickListener() {
@@ -79,16 +77,9 @@ public class MapDialog extends DialogFragment {
                     reset();
                     gameScreen.startNewStage();
                 } else {
-                    if (map != null && userCoordinates != null) {
-                        map.addMarker(new MarkerOptions().position(originalCoordinates));
-                        map.addMarker(new MarkerOptions().position(userCoordinates));
-
-                        PolylineOptions line = new PolylineOptions().add(originalCoordinates).add(userCoordinates);
-                        map.addPolyline(line);
-
-                        isStageEnd = true;
-                        confirmAnswer.setText("Next");
-                    }
+                    isStageEnd = true;
+                    addMarkersGameOver();
+                    confirmAnswer.setText("Next");
                 }
             }
         });
@@ -118,24 +109,10 @@ public class MapDialog extends DialogFragment {
         window.setGravity(Gravity.CENTER);
 
         if (getArguments() != null) {
-            CameraPosition camPos = getArguments().getParcelable("cameraPosition");
-            userCoordinates = getArguments().getParcelable("userCoordinates");
-            if (map != null) {
-                if (userCoordinates != null) {
-                    map.addMarker(new MarkerOptions().position(userCoordinates));
-                }
-                map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
-            }
-            if (getArguments().getBoolean("isStageEnd")) {
-                isStageEnd = true;
-                map.addMarker(new MarkerOptions().position(originalCoordinates));
-                map.addMarker(new MarkerOptions().position(userCoordinates));
-
-                PolylineOptions line = new PolylineOptions().add(originalCoordinates).add(userCoordinates);
-                map.addPolyline(line);
-                
-                confirmAnswer.setText("Next");
-            }
+            restoreMarkers(getArguments());
+        }
+        if (isStageEnd) {
+            confirmAnswer.setText("Next");
         }
     }
 
@@ -149,14 +126,17 @@ public class MapDialog extends DialogFragment {
         }
     }
 
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBundle("state", getBundleState());
+    }
+
     @Override
     public void onDismiss(DialogInterface dialog) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("originalCoordinates", originalCoordinates);
-        bundle.putParcelable("userCoordinates", userCoordinates);
-        bundle.putParcelable("cameraPosition", map.getCameraPosition());
-        bundle.putBoolean("isStageEnd", isStageEnd);
-        gameScreen.dialogArguments = bundle;
+        gameScreen.dialogArguments = getBundleState();
         super.onDismiss(dialog);
     }
 
@@ -164,13 +144,66 @@ public class MapDialog extends DialogFragment {
         this.originalCoordinates = originalCoordinates;
     }
 
-    public void setGameScreen(GameScreen gameScreen) {
-        this.gameScreen = gameScreen;
-    }
-
     private void reset() {
         isStageEnd = false;
         userCoordinates = null;
         originalCoordinates = null;
+    }
+
+    private void restoreMarkers(Bundle savedState) {
+        boolean isStageEnd = savedState.getBoolean("isStageEnd");
+        LatLng originalCoordinates = savedState.getParcelable("originalCoordinates");
+        LatLng userCoordinates = savedState.getParcelable("userCoordinates");
+        CameraPosition cp = savedState.getParcelable("cameraPosition");
+
+        if (originalCoordinates != null) {
+            this.originalCoordinates = originalCoordinates;
+        }
+
+        if (userCoordinates != null) {
+            this.userCoordinates = userCoordinates;
+        }
+
+        if (cp != null) {
+            if (map != null) {
+                map.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
+            }
+        }
+
+        // Конец игры
+        if (isStageEnd) {
+            this.isStageEnd = true;
+            addMarkersGameOver();
+            if (confirmAnswer != null) {
+                confirmAnswer.setText("Next");
+            }
+        } else {
+            if (map != null) {
+                if (this.userCoordinates != null) {
+                    map.addMarker(new MarkerOptions().position(this.userCoordinates));
+                }
+            }
+        }
+    }
+
+    private void addMarkersGameOver() {
+        if (originalCoordinates == null || userCoordinates == null || map == null) {
+            Log.e(LOG_TAG, "Map or coordinates is null!");
+        } else {
+            map.addMarker(new MarkerOptions().position(originalCoordinates));
+            map.addMarker(new MarkerOptions().position(userCoordinates));
+
+            PolylineOptions line = new PolylineOptions().add(originalCoordinates).add(userCoordinates).color(Color.RED);
+            map.addPolyline(line);
+        }
+    }
+
+    private Bundle getBundleState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("originalCoordinates", originalCoordinates);
+        bundle.putParcelable("userCoordinates", userCoordinates);
+        bundle.putParcelable("cameraPosition", map.getCameraPosition());
+        bundle.putBoolean("isStageEnd", isStageEnd);
+        return bundle;
     }
 }

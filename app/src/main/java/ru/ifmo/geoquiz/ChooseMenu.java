@@ -18,17 +18,18 @@ public class ChooseMenu extends Activity {
     private String[] names;
     private String[] isoCodes;
     private String LOG_TAG = "Choose";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_menu);
-        ListView listView = (ListView)findViewById(R.id.listView);
+        ListView listView = (ListView) findViewById(R.id.listView);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 Log.d(LOG_TAG, "itemClick: position = " + position + ", id = "
                         + id);
-                startGame((int)id);
+                startGame((int) id);
             }
         });
         if (savedInstanceState == null) {
@@ -39,19 +40,19 @@ public class ChooseMenu extends Activity {
                 names[i] = countries[i].getName();
                 isoCodes[i] = countries[i].getISOCode();
             }
-        }else{
+        } else {
             names = savedInstanceState.getStringArray("countries");
         }
         listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, names));
     }
 
-    private void startGame(int id){
+    private void startGame(int id) {
         Intent intent = new Intent(this, GameScreen.class);
         Round game = new Round(1, new Country[]{GeoSearch.getInstance().getCountry(isoCodes[id])});
-        intent.putExtra("gaem", game);
-        //Log.i(LOG_TAG);
+        intent.putExtra("game", game);
         startActivity(intent);
     }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

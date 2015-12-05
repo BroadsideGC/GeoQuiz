@@ -14,10 +14,8 @@ import com.google.android.gms.maps.StreetViewPanorama;
 import com.google.android.gms.maps.StreetViewPanoramaFragment;
 import com.google.android.gms.maps.model.LatLng;
 
-import ru.ifmo.geoquiz.model.Country;
 import ru.ifmo.geoquiz.model.Round;
 import ru.ifmo.geoquiz.model.Stage;
-import ru.ifmo.geoquiz.utils.GeoSearch;
 
 public class GameScreen extends FragmentActivity implements OnStreetViewPanoramaReadyCallback {
 
@@ -31,7 +29,6 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
     private StreetViewPanorama panorama = null;
     private LatLng prevPoint = null;
 
-    Button actionButton;
     Button mapButton;
     MapDialog dialog;
 
@@ -44,14 +41,10 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         setContentView(R.layout.activity_game_screen);
 
         dialog = new MapDialog();
+        if (savedInstanceState != null) {
+            dialogArguments = savedInstanceState.getBundle("dialogArguments");
+        }
 
-        actionButton = (Button) findViewById(R.id.action);
-        actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                moveToRandomPoint();
-            }
-        });
         mapButton = (Button) findViewById(R.id.map);
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,8 +59,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         });
 
         if (savedInstanceState == null) {
-            // Тестовая игра
-            game = getIntent().getExtras().getParcelable("gaem");
+            game = getIntent().getExtras().getParcelable("game");
         } else {
             game = (Round) savedInstanceState.get("game");
             curStage = game.getCurStage();
@@ -96,15 +88,20 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         this.panorama.setStreetNamesEnabled(false);
         if (prevPoint != null) {
             panorama.setPosition(prevPoint);
+            mapButton.setEnabled(true);
         } else {
             startNewStage();
         }
     }
 
     public void moveToRandomPoint() {
+        mapButton.setEnabled(false);
+
         final LatLng rndPoint = curStage.getCountry().getRandomPointInCountry();
         panorama.setPosition(rndPoint, RADIUS);
+
         Log.d(LOG_TAG, "Pano set in " + curStage.getCountry().getISOCode() + " at " + rndPoint.toString());
+
         checkHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -112,6 +109,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
                 if (panorama.getLocation() != null && panorama.getLocation().links != null) {
                     Log.d(LOG_TAG, "Pano found in " + rndPoint.toString() + ". Original point " + panorama.getLocation().position);
                     curStage.setOriginalPoint(panorama.getLocation().position);
+                    mapButton.setEnabled(true);
                 } else {
                     Log.d(LOG_TAG, "No panos found in " + rndPoint.toString());
                     moveToRandomPoint();
@@ -127,7 +125,6 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
     public void startNewStage() {
         dialogArguments = null;
         if (game.getStagesRemainingCount() == 0) {
-            Toast.makeText(getApplicationContext(), "Game over. Your score: " + game.score(), Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, EndGame.class);
             intent.putExtra("score", game.score());
             startActivity(intent);
