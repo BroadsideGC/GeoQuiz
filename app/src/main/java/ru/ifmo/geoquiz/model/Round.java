@@ -45,6 +45,9 @@ public class Round implements Parcelable {
     }
 
     public Stage getCurStage() {
+        if (curStageIndex < 0) {
+            return null;
+        }
         return this.stages[curStageIndex];
     }
 
@@ -59,6 +62,12 @@ public class Round implements Parcelable {
     private Country chooseCountry() {
         Integer randomIndex = Math.abs(new Random().nextInt()) % availableCountries.length;
         return availableCountries[randomIndex];
+    }
+
+    public void invalidateLastStage() {
+        if (curStageIndex >= 0) {
+            curStageIndex--;
+        }
     }
 
     public Integer getStagesRemainingCount() {

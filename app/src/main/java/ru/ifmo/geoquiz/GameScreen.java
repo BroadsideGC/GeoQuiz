@@ -83,12 +83,25 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("game", game);
+
         if (panorama != null && panorama.getLocation() != null && panorama.getLocation().links != null) {
             outState.putParcelable("point", panorama.getLocation().position);
+        } else {
+            game.invalidateLastStage();
         }
+
         if (dialogArguments != null) {
             outState.putBundle("dialogArguments", dialogArguments);
+        }
+
+        outState.putParcelable("game", game);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (progressSearching != null && progressSearching.isShowing()) {
+            progressSearching.dismiss();
         }
     }
 
@@ -193,7 +206,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
 
     private void searchFail() {
         stopSearching = true;
-        if (progressSearching.isShowing()) {
+        if (progressSearching != null && progressSearching.isShowing()) {
             progressSearching.dismiss();
         }
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
