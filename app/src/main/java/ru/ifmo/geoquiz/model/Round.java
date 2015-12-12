@@ -34,7 +34,7 @@ public class Round implements Parcelable {
     }
 
     public Round(int stagesCount) {
-        this(stagesCount, new Country[] {});
+        this(stagesCount, new Country[]{});
     }
 
     public Stage nextStage() {
@@ -54,7 +54,9 @@ public class Round implements Parcelable {
     public Integer score() {
         this.score = 0;
         for (Stage s: stages) {
-            this.score += s.score();
+            if (s != null) {
+                this.score += s.score();
+            }
         }
         return this.score;
     }
@@ -72,6 +74,10 @@ public class Round implements Parcelable {
 
     public Integer getStagesRemainingCount() {
         return stagesCount - curStageIndex - 1;
+    }
+
+    public Integer getStagesCount() {
+        return stagesCount;
     }
 
     // Parceling

@@ -52,7 +52,7 @@ public class ChooseMenu extends Activity {
         adapter = new RecyclerAdapter(this, names);
         listView.setAdapter(adapter);
         stages = 1;
-        rcount.setText(String.format(getString(R.string.view_text), stages));
+        rcount.setText(String.format(getString(R.string.stages_count), stages));
         if (savedInstanceState != null) {
             getCountries = (GetCountries) getLastNonConfigurationInstance();
         }
@@ -122,14 +122,14 @@ public class ChooseMenu extends Activity {
         if (stages < Round.MAX_STAGES) {
             stages++;
         }
-        rcount.setText(String.format(getString(R.string.view_text), stages));
+        rcount.setText(String.format(getString(R.string.stages_count), stages));
     }
 
     public void roundMinus(View v) {
         if (stages > 1) {
             stages--;
         }
-        rcount.setText(String.format(getString(R.string.view_text), stages));
+        rcount.setText(String.format(getString(R.string.stages_count), stages));
     }
 
     private void startGame(int id) {
@@ -147,7 +147,7 @@ public class ChooseMenu extends Activity {
         isoCodes = savedInstanceState.getStringArrayList(BUNDLE_KEY_ISO_CODES);
         status = (Status) savedInstanceState.getSerializable(BUNDLE_KEY_STATUS);
         stages = savedInstanceState.getInt(BUNDLE_KEY_STAGES);
-        rcount.setText(String.format(getString(R.string.view_text), stages));
+        rcount.setText(String.format(getString(R.string.stages_count), stages));
 
         if (status == Status.DONE) {
             progressBar.setVisibility(View.GONE);

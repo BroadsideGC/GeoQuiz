@@ -26,7 +26,7 @@
             android:paddingLeft="40dp"
             android:paddingRight="40dp"
             android:paddingTop="15dp"
-            android:text="New Game"
+            android:text="@string/new_game"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
     </RelativeLayout>

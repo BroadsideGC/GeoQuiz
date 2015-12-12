@@ -82,14 +82,14 @@ public class MapDialog extends DialogFragment {
             public void onClick(View v) {
                 if (isStageEnd) {
                     gameScreen.getCurStage().setUserPoint(userCoordinates);
-                    Toast.makeText(getContext(), "Your score: " + gameScreen.getCurStage().score(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), String.format(getString(R.string.your_score), gameScreen.getCurStage().score()), Toast.LENGTH_SHORT).show();
                     getDialog().dismiss();
                     reset();
                     gameScreen.startNewStage();
                 } else {
                     isStageEnd = true;
                     addMarkersGameOver();
-                    confirmAnswer.setText("Next");
+                    confirmAnswer.setText(getString(R.string.next));
                 }
             }
         });
@@ -122,7 +122,7 @@ public class MapDialog extends DialogFragment {
             restoreMarkers(getArguments());
         }
         if (isStageEnd) {
-            confirmAnswer.setText("Next");
+            confirmAnswer.setText(getString(R.string.next));
         }
     }
 
@@ -185,7 +185,7 @@ public class MapDialog extends DialogFragment {
             this.isStageEnd = true;
             addMarkersGameOver();
             if (confirmAnswer != null) {
-                confirmAnswer.setText("Next");
+                confirmAnswer.setText(getString(R.string.next));
             }
         } else {
             if (map != null) {

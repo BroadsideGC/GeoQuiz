@@ -13,7 +13,7 @@ public class EndGame extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end_game);
         TextView score = (TextView)findViewById(R.id.textView);
-        score.setText("Your score: " + getIntent().getExtras().getInt("score"));
+        score.setText(String.format(getString(R.string.your_score), getIntent().getExtras().getInt(GameScreen.BUNDLE_KEY_SCORE)));
     }
 
     public void backToMenu(View view){

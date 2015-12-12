@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.games.Game;
 import com.google.android.gms.maps.OnStreetViewPanoramaReadyCallback;
@@ -44,6 +45,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
     MapDialog dialog;
     ProgressDialog progressSearching;
     CountDownTimer timerSearching;
+    TextView textViewScore;
 
 
     Bundle dialogArguments;
@@ -79,6 +81,9 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
             curStage = game.getCurStage();
             prevPoint = (LatLng) savedInstanceState.get(BUNDLE_KEY_POINT);
         }
+
+        textViewScore = (TextView) findViewById(R.id.score);
+        textViewScore.setText(String.format(getString(R.string.score), game.getStagesCount() - game.getStagesRemainingCount() + 1, game.getStagesCount(), game.score()));
 
         StreetViewPanoramaFragment streetViewPanoramaFragment = (StreetViewPanoramaFragment) getFragmentManager().findFragmentById(R.id.streetviewpanorama);
         streetViewPanoramaFragment.getStreetViewPanoramaAsync(this);
@@ -196,6 +201,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
             intent.putExtra(BUNDLE_KEY_SCORE, game.score());
             startActivity(intent);
         } else {
+            textViewScore.setText(String.format(getString(R.string.score), game.getStagesCount() - game.getStagesRemainingCount() + 1, game.getStagesCount(), game.score()));
             curStage = game.nextStage();
             moveToRandomPoint();
         }
@@ -203,7 +209,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
 
     private ProgressDialog panoWaitingDialog() {
         ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Searching location...");
+        progressDialog.setMessage(getString(R.string.searching));
         progressDialog.setCancelable(false);
         return progressDialog;
     }
@@ -214,8 +220,8 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
             progressSearching.dismiss();
         }
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Location not found!");
-        alertDialogBuilder.setNeutralButton("Try another", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setMessage(getString(R.string.location_not_found));
+        alertDialogBuilder.setNeutralButton(getString(R.string.try_another), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(GameScreen.this, ChooseMenu.class);

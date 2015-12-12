@@ -2,6 +2,18 @@
     <string name="app_name">GeoQuiz</string>
     <string name="title_activity_game_screen">Map</string>
     <string name="title_activity_main_menu">MainMenu</string>
-    <string name="view_text">Stages: %d</string>
-    <string name="loading">Loading..</string>
+    <string name="stages_count">Stages: %d</string>
+    <string name="loading">Loading…</string>
+    <string name="your_score">Your score: %d</string>
+    <string name="searching">Searching location…</string>
+    <string name="location_not_found">Location not found</string>
+    <string name="try_another">Try another</string>
+    <string name="next">Next</string>
+    <string name="make_guess">Make guess</string>
+    <string name="back_to_menu">Back to menu</string>
+    <string name="map">Map</string>
+    <string name="score" formatted="false">Round: %d/%d |  Score: %d</string>
+    <string name="new_game">New game</string>
+    <string name="choose_location">Choose location</string>
+    <string name="done">Done</string>
 </resources>
