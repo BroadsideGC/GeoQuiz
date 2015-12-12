@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -46,6 +47,10 @@ public class MapDialog extends DialogFragment {
     Button confirmAnswer;
     // Игровой активити
     GameScreen gameScreen;
+    // Маркер настоящей точки
+    MarkerOptions markerOriginal = new MarkerOptions();
+    // Маркер пользовательской точки
+    MarkerOptions markerUser = new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
     @Override
     public void onAttach(Activity activity) {
@@ -99,7 +104,7 @@ public class MapDialog extends DialogFragment {
                     if (!isStageEnd) {
                         map.clear();
                         userCoordinates = latLng;
-                        map.addMarker(new MarkerOptions().position(userCoordinates));
+                        map.addMarker(markerUser.position(userCoordinates));
                     }
                 }
             });
@@ -185,7 +190,7 @@ public class MapDialog extends DialogFragment {
         } else {
             if (map != null) {
                 if (this.userCoordinates != null) {
-                    map.addMarker(new MarkerOptions().position(this.userCoordinates));
+                    map.addMarker(markerUser.position(this.userCoordinates));
                 }
             }
         }
@@ -195,8 +200,8 @@ public class MapDialog extends DialogFragment {
         if (originalCoordinates == null || userCoordinates == null || map == null) {
             Log.e(LOG_TAG, "Map or coordinates is null!");
         } else {
-            map.addMarker(new MarkerOptions().position(originalCoordinates));
-            map.addMarker(new MarkerOptions().position(userCoordinates));
+            map.addMarker(markerOriginal.position(originalCoordinates));
+            map.addMarker(markerUser.position(userCoordinates));
 
             PolylineOptions line = new PolylineOptions().add(originalCoordinates).add(userCoordinates).color(Color.RED);
             map.addPolyline(line);
