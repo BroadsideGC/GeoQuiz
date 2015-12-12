@@ -145,8 +145,8 @@ public class ChooseMenu extends Activity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putStringArrayList("names", names);
         Log.d(TAG, "Fukkin saved " + names.size());
+        outState.putStringArrayList("names", names);
         outState.putStringArrayList("isoCodes", isoCodes);
     }
 
@@ -182,7 +182,6 @@ public class ChooseMenu extends Activity {
             valid[28] = true;
             valid[30] = true;
             valid[35] = true;
-            valid[39] = true;
             valid[40] = true;
             valid[41] = true;
             valid[50] = true;
@@ -204,21 +203,21 @@ public class ChooseMenu extends Activity {
             valid[151] = true;
             valid[162] = true;
             valid[166] = true;
-
-            isoCodes.clear();
-            ArrayList<String> lnames = new ArrayList<>();
+            activity.names.clear();
+            activity.isoCodes.clear();
+            //ArrayList<String> lnames = new ArrayList<>();
             // ArrayList<String> lisoCodes= new ArrayList<>();
             for (int i = 0; i < countries.length; i++) {
                 if (valid[i]) {
-                    lnames.add(countries[i].getName());
-                    isoCodes.add(countries[i].getISOCode());
+                    activity.names.add(countries[i].getName());
+                    activity.isoCodes.add(countries[i].getISOCode());
                 }
             }
-            names.clear();
-            names.addAll(lnames);
-            Log.d(TAG, "Filled " + names.size());
-            adapter.notifyDataSetChanged();
-            Log.d(TAG, "Notifed");
+
+            // activity.names.addAll(activity.names);
+            Log.d(TAG, "Filled " + activity.names.size());
+            activity.adapter.notifyDataSetChanged();
+            Log.d(TAG, "Notifed " + names.size());
             Log.d(TAG, "READY ");
         }
 
