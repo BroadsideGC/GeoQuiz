@@ -193,7 +193,7 @@ public class ChooseMenu extends Activity {
 
         @Override
         protected void onPostExecute(Country[] countries) {
-            List<String> availableCountries = Arrays.asList("AU", "AT", "BE", "BR", "CA", "CH", "CZ", "DE", "ES", "FI", "LV", "LT", "FR", "GB", "GR", "HU", "IL", "IT", "JP", "NL", "NO", "PL", "SE", "TR", "UA", "US");
+            List<String> availableCountries = Arrays.asList("AU", "AT", "BE", "BR", "CA", "CH", "CZ", "DE", "ES", "FI", "LV", "LT", "FR", "GB", "GR", "HU", "IL", "IT", "JP", "NL", "NO", "PL", "SE", "TR", "UA", "US", "EE");
 
             activity.names.clear();
             activity.isoCodes.clear();
