@@ -26,12 +26,13 @@ public class ChooseMenu extends Activity {
     public static final String BUNDLE_KEY_NAMES = "names";
     public static final String BUNDLE_KEY_ISO_CODES = "isoCodes";
     public static final String BUNDLE_KEY_STATUS = "status";
-    public static final String BUNDLE_KEY_ROUNDS = "rounds";
+    public static final String BUNDLE_KEY_STAGES = "stages";
     private static String LOG_TAG = "ChooseMenu";
+    private static String VIEW_TEXT = "Stages: ";
 
     private ArrayList<String> names;
     private ArrayList<String> isoCodes;
-    private int rounds;
+    private int stages;
     RecyclerView listView;
     TextView rcount;
     ProgressBar progressBar;
@@ -51,8 +52,8 @@ public class ChooseMenu extends Activity {
         isoCodes = new ArrayList<>();
         adapter = new RecyclerAdapter(this, names);
         listView.setAdapter(adapter);
-        rounds = 1;
-        rcount.setText("Rounds: " + rounds);
+        stages = 1;
+        rcount.setText(VIEW_TEXT + stages);
         if (savedInstanceState != null) {
             getCountries = (GetCountries) getLastNonConfigurationInstance();
         }
@@ -119,22 +120,22 @@ public class ChooseMenu extends Activity {
     }
 
     public void roundPlus(View v) {
-        if (rounds < 1488) {
-            rounds++;
+        if (stages < Round.MAX_STAGES) {
+            stages++;
         }
-        rcount.setText("Rounds: " + rounds);
+        rcount.setText(VIEW_TEXT + stages);
     }
 
     public void roundMinus(View v) {
-        if (rounds > 1) {
-            rounds--;
+        if (stages > 1) {
+            stages--;
         }
-        rcount.setText("Rounds: " + rounds);
+        rcount.setText(VIEW_TEXT + stages);
     }
 
     private void startGame(int id) {
         Intent intent = new Intent(this, GameScreen.class);
-        Round game = new Round(rounds, new Country[]{GeoSearch.getInstance().getCountry(isoCodes.get(id))});
+        Round game = new Round(stages, new Country[]{GeoSearch.getInstance().getCountry(isoCodes.get(id))});
         intent.putExtra(GameScreen.BUNDLE_KEY_GAME, game);
         startActivity(intent);
     }
@@ -146,8 +147,8 @@ public class ChooseMenu extends Activity {
         names.addAll(savedInstanceState.getStringArrayList(BUNDLE_KEY_NAMES));
         isoCodes = savedInstanceState.getStringArrayList(BUNDLE_KEY_ISO_CODES);
         status = (Status) savedInstanceState.getSerializable(BUNDLE_KEY_STATUS);
-        rounds = savedInstanceState.getInt(BUNDLE_KEY_ROUNDS);
-        rcount.setText("Rounds: " + rounds);
+        stages = savedInstanceState.getInt(BUNDLE_KEY_STAGES);
+        rcount.setText(VIEW_TEXT + stages);
 
         if (status == Status.DONE) {
             progressBar.setVisibility(View.GONE);
@@ -166,7 +167,7 @@ public class ChooseMenu extends Activity {
         outState.putStringArrayList(BUNDLE_KEY_NAMES, names);
         outState.putStringArrayList(BUNDLE_KEY_ISO_CODES, isoCodes);
         outState.putSerializable(BUNDLE_KEY_STATUS, status);
-        outState.putInt(BUNDLE_KEY_ROUNDS, rounds);
+        outState.putInt(BUNDLE_KEY_STAGES, stages);
     }
 
     class GetCountries extends AsyncTask<Void, Void, Country[]> {

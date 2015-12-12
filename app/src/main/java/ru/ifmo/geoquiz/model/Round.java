@@ -7,7 +7,7 @@ import ru.ifmo.geoquiz.utils.GeoSearch;
 
 public class Round implements Parcelable {
 
-    private static final Integer MAX_STAGES = 10;
+    public static final Integer MAX_STAGES = 10;
 
     private GeoSearch geoSearch;
 
