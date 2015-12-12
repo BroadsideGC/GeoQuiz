@@ -30,7 +30,7 @@
             android:layout_gravity="start"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
-            android:text="New Text"
+            android:text="@string/loading"
             android:textSize="36sp" />
 
         <LinearLayout

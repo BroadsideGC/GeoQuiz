@@ -28,7 +28,6 @@ public class ChooseMenu extends Activity {
     public static final String BUNDLE_KEY_STATUS = "status";
     public static final String BUNDLE_KEY_STAGES = "stages";
     private static String LOG_TAG = "ChooseMenu";
-    private static String VIEW_TEXT = "Stages: ";
 
     private ArrayList<String> names;
     private ArrayList<String> isoCodes;
@@ -53,7 +52,7 @@ public class ChooseMenu extends Activity {
         adapter = new RecyclerAdapter(this, names);
         listView.setAdapter(adapter);
         stages = 1;
-        rcount.setText(VIEW_TEXT + stages);
+        rcount.setText(String.format(getString(R.string.view_text), stages));
         if (savedInstanceState != null) {
             getCountries = (GetCountries) getLastNonConfigurationInstance();
         }
@@ -123,14 +122,14 @@ public class ChooseMenu extends Activity {
         if (stages < Round.MAX_STAGES) {
             stages++;
         }
-        rcount.setText(VIEW_TEXT + stages);
+        rcount.setText(String.format(getString(R.string.view_text), stages));
     }
 
     public void roundMinus(View v) {
         if (stages > 1) {
             stages--;
         }
-        rcount.setText(VIEW_TEXT + stages);
+        rcount.setText(String.format(getString(R.string.view_text), stages));
     }
 
     private void startGame(int id) {
@@ -148,7 +147,7 @@ public class ChooseMenu extends Activity {
         isoCodes = savedInstanceState.getStringArrayList(BUNDLE_KEY_ISO_CODES);
         status = (Status) savedInstanceState.getSerializable(BUNDLE_KEY_STATUS);
         stages = savedInstanceState.getInt(BUNDLE_KEY_STAGES);
-        rcount.setText(VIEW_TEXT + stages);
+        rcount.setText(String.format(getString(R.string.view_text), stages));
 
         if (status == Status.DONE) {
             progressBar.setVisibility(View.GONE);
