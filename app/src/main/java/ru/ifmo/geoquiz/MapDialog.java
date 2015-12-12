@@ -26,6 +26,11 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 public class MapDialog extends DialogFragment {
     private static final String LOG_TAG = "MapDialog";
+    public static final String BUNDLE_KEY_STATE = "state";
+    public static final String BUNDLE_KEY_IS_STAGE_END = "isStageEnd";
+    public static final String BUNDLE_KEY_ORIGINAL_COORDINATES = "originalCoordinates";
+    public static final String BUNDLE_KEY_USER_COORDINATES = "userCoordinates";
+    public static final String BUNDLE_KEY_CAMERA_POSITION = "cameraPosition";
 
     // Фрагмент с картой
     private SupportMapFragment fragment;
@@ -62,7 +67,7 @@ public class MapDialog extends DialogFragment {
             restoreMarkers(getArguments());
         } else {
             if (savedInstanceState != null) {
-                restoreMarkers(savedInstanceState.getBundle("state"));
+                restoreMarkers(savedInstanceState.getBundle(BUNDLE_KEY_STATE));
             }
         }
 
@@ -131,7 +136,7 @@ public class MapDialog extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBundle("state", getBundleState());
+        outState.putBundle(BUNDLE_KEY_STATE, getBundleState());
     }
 
     @Override
@@ -151,10 +156,10 @@ public class MapDialog extends DialogFragment {
     }
 
     private void restoreMarkers(Bundle savedState) {
-        boolean isStageEnd = savedState.getBoolean("isStageEnd");
-        LatLng originalCoordinates = savedState.getParcelable("originalCoordinates");
-        LatLng userCoordinates = savedState.getParcelable("userCoordinates");
-        CameraPosition cp = savedState.getParcelable("cameraPosition");
+        boolean isStageEnd = savedState.getBoolean(BUNDLE_KEY_IS_STAGE_END);
+        LatLng originalCoordinates = savedState.getParcelable(BUNDLE_KEY_ORIGINAL_COORDINATES);
+        LatLng userCoordinates = savedState.getParcelable(BUNDLE_KEY_USER_COORDINATES);
+        CameraPosition cp = savedState.getParcelable(BUNDLE_KEY_CAMERA_POSITION);
 
         if (originalCoordinates != null) {
             this.originalCoordinates = originalCoordinates;
@@ -200,10 +205,10 @@ public class MapDialog extends DialogFragment {
 
     private Bundle getBundleState() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("originalCoordinates", originalCoordinates);
-        bundle.putParcelable("userCoordinates", userCoordinates);
-        bundle.putParcelable("cameraPosition", map.getCameraPosition());
-        bundle.putBoolean("isStageEnd", isStageEnd);
+        bundle.putParcelable(BUNDLE_KEY_ORIGINAL_COORDINATES, originalCoordinates);
+        bundle.putParcelable(BUNDLE_KEY_USER_COORDINATES, userCoordinates);
+        bundle.putParcelable(BUNDLE_KEY_CAMERA_POSITION, map.getCameraPosition());
+        bundle.putBoolean(BUNDLE_KEY_IS_STAGE_END, isStageEnd);
         return bundle;
     }
 }

@@ -28,6 +28,10 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
 
     private static final Integer RADIUS = 50_000;
     private static final Integer MAX_SEARCHING_TIME = 10_000;
+    public static final String BUNDLE_KEY_DIALOG_ARGUMENTS = "dialogArguments";
+    public static final String BUNDLE_KEY_GAME = "game";
+    public static final String BUNDLE_KEY_POINT = "point";
+    public static final String BUNDLE_KEY_SCORE = "score";
 
     private Handler checkHandler = new Handler();
     private Round game;
@@ -52,7 +56,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
 
         dialog = new MapDialog();
         if (savedInstanceState != null) {
-            dialogArguments = savedInstanceState.getBundle("dialogArguments");
+            dialogArguments = savedInstanceState.getBundle(BUNDLE_KEY_DIALOG_ARGUMENTS);
         }
 
         mapButton = (Button) findViewById(R.id.map);
@@ -69,11 +73,11 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         });
 
         if (savedInstanceState == null) {
-            game = getIntent().getExtras().getParcelable("game");
+            game = getIntent().getExtras().getParcelable(BUNDLE_KEY_GAME);
         } else {
-            game = (Round) savedInstanceState.get("game");
+            game = (Round) savedInstanceState.get(BUNDLE_KEY_GAME);
             curStage = game.getCurStage();
-            prevPoint = (LatLng) savedInstanceState.get("point");
+            prevPoint = (LatLng) savedInstanceState.get(BUNDLE_KEY_POINT);
         }
 
         StreetViewPanoramaFragment streetViewPanoramaFragment = (StreetViewPanoramaFragment) getFragmentManager().findFragmentById(R.id.streetviewpanorama);
@@ -85,16 +89,16 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         super.onSaveInstanceState(outState);
 
         if (panorama != null && panorama.getLocation() != null && panorama.getLocation().links != null) {
-            outState.putParcelable("point", panorama.getLocation().position);
+            outState.putParcelable(BUNDLE_KEY_POINT, panorama.getLocation().position);
         } else {
             game.invalidateLastStage();
         }
 
         if (dialogArguments != null) {
-            outState.putBundle("dialogArguments", dialogArguments);
+            outState.putBundle(BUNDLE_KEY_DIALOG_ARGUMENTS, dialogArguments);
         }
 
-        outState.putParcelable("game", game);
+        outState.putParcelable(BUNDLE_KEY_GAME, game);
     }
 
     @Override
@@ -189,7 +193,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
 
         if (game.getStagesRemainingCount() == 0) {
             Intent intent = new Intent(this, EndGame.class);
-            intent.putExtra("score", game.score());
+            intent.putExtra(BUNDLE_KEY_SCORE, game.score());
             startActivity(intent);
         } else {
             curStage = game.nextStage();

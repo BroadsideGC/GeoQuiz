@@ -3,10 +3,7 @@ package ru.ifmo.geoquiz;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Parcel;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,17 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import ru.ifmo.geoquiz.model.Country;
@@ -32,12 +22,15 @@ import ru.ifmo.geoquiz.model.Round;
 import ru.ifmo.geoquiz.utils.GeoSearch;
 
 public class ChooseMenu extends Activity {
+    public static final String BUNDLE_KEY_NAMES = "names";
+    public static final String BUNDLE_KEY_ISO_CODES = "isoCodes";
+    private static String LOG_TAG = "ChooseMenu";
+
     private ArrayList<String> names;
     private ArrayList<String> isoCodes;
     RecyclerView listView;
     RecyclerAdapter adapter;
     GetCountries getCountries;
-    private static String LOG_TAG = "Choose";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +51,6 @@ public class ChooseMenu extends Activity {
             getCountries.execute();
         } else {
             getCountries.attachActivity(this);
-            // Log.d(TAG,);
         }
     }
 
@@ -116,7 +108,7 @@ public class ChooseMenu extends Activity {
 
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "Clicked " + getAdapterPosition());
+                Log.d(LOG_TAG, "Clicked " + getAdapterPosition());
                 startGame(getAdapterPosition());
             }
         }
@@ -125,7 +117,7 @@ public class ChooseMenu extends Activity {
     private void startGame(int id) {
         Intent intent = new Intent(this, GameScreen.class);
         Round game = new Round(1, new Country[]{GeoSearch.getInstance().getCountry(isoCodes.get(id))});
-        intent.putExtra("game", game);
+        intent.putExtra(GameScreen.BUNDLE_KEY_GAME, game);
         startActivity(intent);
     }
 
@@ -133,21 +125,21 @@ public class ChooseMenu extends Activity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         names.clear();
-        names.addAll(savedInstanceState.getStringArrayList("names"));
-        isoCodes = savedInstanceState.getStringArrayList("isoCodes");
+        names.addAll(savedInstanceState.getStringArrayList(BUNDLE_KEY_NAMES));
+        isoCodes = savedInstanceState.getStringArrayList(BUNDLE_KEY_ISO_CODES);
         if (names.size() > 0) {
             adapter.notifyDataSetChanged();
-            Log.d(TAG, "Notifed Restored " + names.size());
+            Log.d(LOG_TAG, "Notifed Restored " + names.size());
         }
-        Log.d(TAG, "Restored " + names.size());
+        Log.d(LOG_TAG, "Restored " + names.size());
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d(TAG, "Fukkin saved " + names.size());
-        outState.putStringArrayList("names", names);
-        outState.putStringArrayList("isoCodes", isoCodes);
+        Log.d(LOG_TAG, "Fukkin saved " + names.size());
+        outState.putStringArrayList(BUNDLE_KEY_NAMES, names);
+        outState.putStringArrayList(BUNDLE_KEY_ISO_CODES, isoCodes);
     }
 
     class GetCountries extends AsyncTask<Void, Void, Country[]> {
@@ -162,7 +154,7 @@ public class ChooseMenu extends Activity {
         void attachActivity(ChooseMenu activity) {
             this.activity = activity;
             this.appContext = activity.getApplicationContext();
-            Log.d(TAG, "Attached");
+            Log.d(LOG_TAG, "Attached");
         }
 
 
@@ -173,55 +165,22 @@ public class ChooseMenu extends Activity {
 
         @Override
         protected void onPostExecute(Country[] countries) {
-            boolean[] valid = new boolean[countries.length];
-            valid[8] = true;
-            valid[9] = true;
-            valid[12] = true;
-            valid[22] = true;
-            valid[27] = true;
-            valid[28] = true;
-            valid[30] = true;
-            valid[35] = true;
-            valid[40] = true;
-            valid[41] = true;
-            valid[50] = true;
-            valid[52] = true;
-            valid[55] = true;
-            valid[57] = true;
-            valid[64] = true;
-            valid[71] = true;
-            valid[77] = true;
-            valid[78] = true;
-            valid[79] = true;
-            valid[82] = true;
-            valid[87] = true;
-            valid[97] = true;
-            valid[117] = true;
-            valid[118] = true;
-            valid[120] = true;
-            valid[127] = true;
-            valid[151] = true;
-            valid[162] = true;
-            valid[166] = true;
+            List<String> availableCountries = Arrays.asList("AU", "AT", "BE", "BR", "CA", "CH", "CZ", "DE", "ES", "FI", "LV", "LT", "FR", "GB", "GR", "HU", "IL", "IT", "JP", "NL", "NO", "PL", "SE", "TR", "UA", "US");
+
             activity.names.clear();
             activity.isoCodes.clear();
-            //ArrayList<String> lnames = new ArrayList<>();
-            // ArrayList<String> lisoCodes= new ArrayList<>();
             for (int i = 0; i < countries.length; i++) {
-                if (valid[i]) {
+                if (availableCountries.contains(countries[i].getISOCode())) {
                     activity.names.add(countries[i].getName());
                     activity.isoCodes.add(countries[i].getISOCode());
                 }
             }
 
-            // activity.names.addAll(activity.names);
-            Log.d(TAG, "Filled " + activity.names.size());
+            Log.d(LOG_TAG, "Filled " + activity.names.size());
             activity.adapter.notifyDataSetChanged();
-            Log.d(TAG, "Notifed " + names.size());
-            Log.d(TAG, "READY ");
+            Log.d(LOG_TAG, "Notifed " + names.size());
+            Log.d(LOG_TAG, "READY ");
         }
 
     }
-
-    private String TAG = "Choose Menu";
 }
