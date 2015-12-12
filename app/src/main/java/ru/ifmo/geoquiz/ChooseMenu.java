@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -24,13 +25,16 @@ import ru.ifmo.geoquiz.utils.GeoSearch;
 public class ChooseMenu extends Activity {
     public static final String BUNDLE_KEY_NAMES = "names";
     public static final String BUNDLE_KEY_ISO_CODES = "isoCodes";
+    public static final String BUNDLE_KEY_STATUS = "status";
     private static String LOG_TAG = "ChooseMenu";
 
     private ArrayList<String> names;
     private ArrayList<String> isoCodes;
     RecyclerView listView;
+    ProgressBar progressBar;
     RecyclerAdapter adapter;
     GetCountries getCountries;
+    Status status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +42,7 @@ public class ChooseMenu extends Activity {
         setContentView(R.layout.activity_choose_menu);
         listView = (RecyclerView) findViewById(R.id.listView);
         listView.setLayoutManager(new LinearLayoutManager(this));
-
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         names = new ArrayList<>();
         isoCodes = new ArrayList<>();
         adapter = new RecyclerAdapter(this, names);
@@ -127,6 +131,10 @@ public class ChooseMenu extends Activity {
         names.clear();
         names.addAll(savedInstanceState.getStringArrayList(BUNDLE_KEY_NAMES));
         isoCodes = savedInstanceState.getStringArrayList(BUNDLE_KEY_ISO_CODES);
+        status = (Status) savedInstanceState.getSerializable(BUNDLE_KEY_STATUS);
+        if (status == Status.DONE) {
+            progressBar.setVisibility(View.GONE);
+        }
         if (names.size() > 0) {
             adapter.notifyDataSetChanged();
             Log.d(LOG_TAG, "Notifed Restored " + names.size());
@@ -140,6 +148,7 @@ public class ChooseMenu extends Activity {
         Log.d(LOG_TAG, "Fukkin saved " + names.size());
         outState.putStringArrayList(BUNDLE_KEY_NAMES, names);
         outState.putStringArrayList(BUNDLE_KEY_ISO_CODES, isoCodes);
+        outState.putSerializable(BUNDLE_KEY_STATUS, status);
     }
 
     class GetCountries extends AsyncTask<Void, Void, Country[]> {
@@ -160,6 +169,7 @@ public class ChooseMenu extends Activity {
 
         @Override
         protected Country[] doInBackground(Void... ignore) {
+            activity.status = ChooseMenu.Status.DOWNLOADING;
             return GeoSearch.getInstance().getAllCountries();
         }
 
@@ -169,18 +179,25 @@ public class ChooseMenu extends Activity {
 
             activity.names.clear();
             activity.isoCodes.clear();
-            for (int i = 0; i < countries.length; i++) {
-                if (availableCountries.contains(countries[i].getISOCode())) {
-                    activity.names.add(countries[i].getName());
-                    activity.isoCodes.add(countries[i].getISOCode());
+            for (Country country : countries) {
+                if (availableCountries.contains(country.getISOCode())) {
+                    activity.names.add(country.getName());
+                    activity.isoCodes.add(country.getISOCode());
                 }
             }
 
             Log.d(LOG_TAG, "Filled " + activity.names.size());
             activity.adapter.notifyDataSetChanged();
             Log.d(LOG_TAG, "Notifed " + names.size());
+            activity.status = ChooseMenu.Status.DONE;
+            progressBar.setVisibility(View.GONE);
             Log.d(LOG_TAG, "READY ");
         }
 
+    }
+
+    enum Status {
+        DOWNLOADING,
+        DONE;
     }
 }
