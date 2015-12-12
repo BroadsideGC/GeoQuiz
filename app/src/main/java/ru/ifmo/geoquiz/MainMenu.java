@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 public class MainMenu extends Activity {
 
@@ -12,10 +13,12 @@ public class MainMenu extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-    }
-
-    public void choose(View view){
-        Intent intent = new Intent(this, ChooseMenu.class);
-        startActivity(intent);
+        Button btnNewGame = (Button) findViewById(R.id.new_game);
+        btnNewGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), ChooseMenu.class));
+            }
+        });
     }
 }
