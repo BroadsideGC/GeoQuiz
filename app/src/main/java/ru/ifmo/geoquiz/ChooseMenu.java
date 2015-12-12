@@ -26,15 +26,18 @@ public class ChooseMenu extends Activity {
     public static final String BUNDLE_KEY_NAMES = "names";
     public static final String BUNDLE_KEY_ISO_CODES = "isoCodes";
     public static final String BUNDLE_KEY_STATUS = "status";
+    public static final String BUNDLE_KEY_ROUNDS = "rounds";
     private static String LOG_TAG = "ChooseMenu";
 
     private ArrayList<String> names;
     private ArrayList<String> isoCodes;
+    private int rounds;
     RecyclerView listView;
+    TextView rcount;
     ProgressBar progressBar;
     RecyclerAdapter adapter;
     GetCountries getCountries;
-    Status status;
+    private Status status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +46,13 @@ public class ChooseMenu extends Activity {
         listView = (RecyclerView) findViewById(R.id.listView);
         listView.setLayoutManager(new LinearLayoutManager(this));
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        rcount = (TextView) findViewById(R.id.roundsCount);
         names = new ArrayList<>();
         isoCodes = new ArrayList<>();
         adapter = new RecyclerAdapter(this, names);
         listView.setAdapter(adapter);
+        rounds = 1;
+        rcount.setText("Rounds: " + rounds);
         if (savedInstanceState != null) {
             getCountries = (GetCountries) getLastNonConfigurationInstance();
         }
@@ -95,12 +101,6 @@ public class ChooseMenu extends Activity {
             return items.size();
         }
 
-        public void swap(ArrayList<String> data) {
-            items.clear();
-            items.addAll(data);
-            notifyDataSetChanged();
-        }
-
         class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             final TextView firstLine;
 
@@ -118,9 +118,23 @@ public class ChooseMenu extends Activity {
         }
     }
 
+    public void roundPlus(View v) {
+        if (rounds < 1488) {
+            rounds++;
+        }
+        rcount.setText("Rounds: " + rounds);
+    }
+
+    public void roundMinus(View v) {
+        if (rounds > 1) {
+            rounds--;
+        }
+        rcount.setText("Rounds: " + rounds);
+    }
+
     private void startGame(int id) {
         Intent intent = new Intent(this, GameScreen.class);
-        Round game = new Round(1, new Country[]{GeoSearch.getInstance().getCountry(isoCodes.get(id))});
+        Round game = new Round(rounds, new Country[]{GeoSearch.getInstance().getCountry(isoCodes.get(id))});
         intent.putExtra(GameScreen.BUNDLE_KEY_GAME, game);
         startActivity(intent);
     }
@@ -132,6 +146,9 @@ public class ChooseMenu extends Activity {
         names.addAll(savedInstanceState.getStringArrayList(BUNDLE_KEY_NAMES));
         isoCodes = savedInstanceState.getStringArrayList(BUNDLE_KEY_ISO_CODES);
         status = (Status) savedInstanceState.getSerializable(BUNDLE_KEY_STATUS);
+        rounds = savedInstanceState.getInt(BUNDLE_KEY_ROUNDS);
+        rcount.setText("Rounds: " + rounds);
+
         if (status == Status.DONE) {
             progressBar.setVisibility(View.GONE);
         }
@@ -149,6 +166,7 @@ public class ChooseMenu extends Activity {
         outState.putStringArrayList(BUNDLE_KEY_NAMES, names);
         outState.putStringArrayList(BUNDLE_KEY_ISO_CODES, isoCodes);
         outState.putSerializable(BUNDLE_KEY_STATUS, status);
+        outState.putInt(BUNDLE_KEY_ROUNDS, rounds);
     }
 
     class GetCountries extends AsyncTask<Void, Void, Country[]> {
