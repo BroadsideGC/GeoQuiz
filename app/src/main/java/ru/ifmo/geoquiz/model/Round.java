@@ -17,6 +17,10 @@ public class Round implements Parcelable {
     private Integer score;
     private Country[] availableCountries;
 
+    public Stage[] getStages() {
+        return stages;
+    }
+
     public Round(int stagesCount, Country[] availableCountries) {
         geoSearch = GeoSearch.getInstance();
 

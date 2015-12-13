@@ -198,7 +198,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
 
         if (game.getStagesRemainingCount() == 0) {
             Intent intent = new Intent(this, EndGame.class);
-            intent.putExtra(BUNDLE_KEY_SCORE, game.score());
+            intent.putExtra(BUNDLE_KEY_GAME, game);
             startActivity(intent);
         } else {
             textViewScore.setText(String.format(getString(R.string.score), game.getStagesCount() - game.getStagesRemainingCount() + 1, game.getStagesCount(), game.score()));
