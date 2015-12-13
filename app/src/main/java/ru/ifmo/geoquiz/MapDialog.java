@@ -209,6 +209,9 @@ public class MapDialog extends DialogFragment {
     }
 
     private Bundle getBundleState() {
+        if (originalCoordinates == null && userCoordinates == null) {
+            return null;
+        }
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_KEY_ORIGINAL_COORDINATES, originalCoordinates);
         bundle.putParcelable(BUNDLE_KEY_USER_COORDINATES, userCoordinates);
