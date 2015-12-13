@@ -208,7 +208,7 @@ public class ChooseMenu extends Activity {
             activity.adapter.notifyDataSetChanged();
             Log.d(LOG_TAG, "Notifed " + names.size());
             activity.status = ChooseMenu.Status.DONE;
-            progressBar.setVisibility(View.GONE);
+            activity.progressBar.setVisibility(View.GONE);
             Log.d(LOG_TAG, "READY ");
         }
 
