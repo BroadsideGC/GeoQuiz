@@ -140,6 +140,10 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         if (progressSearching == null) {
             progressSearching = panoWaitingDialog();
             progressSearching.show();
+        } else {
+            if (!progressSearching.isShowing()) {
+                progressSearching.show();
+            }
         }
 
         if (timerSearching == null) {
