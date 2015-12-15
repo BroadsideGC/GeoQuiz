@@ -92,8 +92,7 @@ public class GeoSearch {
         while (countries.moveToNext()) {
             String admin = countries.getString(countries.getColumnIndex(DatabaseHelper.COUNTRY_ADMIN_NAME_FIELD));
             String iso = countries.getString(countries.getColumnIndex(DatabaseHelper.COUNTRY_ISO_CODE_FIELD));
-            LatLngBounds boundaries = getLatLngBounds(iso);
-            out.add(new Country(admin, iso, boundaries));
+            out.add(new Country(admin, iso, null));
         }
         countries.close();
         return out.toArray(new Country[out.size()]);

@@ -4,19 +4,20 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import java.util.Random;
+
+import ru.ifmo.geoquiz.utils.GeoSearch;
 
 public class Country implements Parcelable {
     private String name;
     private String ISOCode;
-    private LatLngBounds boundaries;
+    private LatLngBounds bounds;
 
-    public Country(String name, String iso, LatLngBounds boundaries) {
+    public Country(String name, String iso, LatLngBounds bounds) {
         this.name = name;
         this.ISOCode = iso;
-        this.boundaries = boundaries;
+        this.bounds = bounds;
     }
 
     public String getName() {
@@ -35,26 +36,29 @@ public class Country implements Parcelable {
         this.ISOCode = ISOCode;
     }
 
-    public LatLngBounds getBoundaries() {
-        return boundaries;
+    public LatLngBounds getBounds() {
+        if (bounds == null) {
+            bounds = GeoSearch.getInstance().getLatLngBounds(ISOCode);
+        }
+        return bounds;
     }
 
-    public void setBoundaries(LatLngBounds boundaries) {
-        this.boundaries = boundaries;
+    public void setBounds(LatLngBounds bounds) {
+        this.bounds = bounds;
     }
 
     public LatLng getRandomPointInCountry() {
-        Double lngSpan = boundaries.northeast.longitude - boundaries.southwest.longitude;
-        Double latSpan = boundaries.northeast.latitude - boundaries.southwest.latitude;
+        Double lngSpan = getBounds().northeast.longitude - getBounds().southwest.longitude;
+        Double latSpan = getBounds().northeast.latitude - getBounds().southwest.latitude;
         Random random = new Random(System.currentTimeMillis());
-        return new LatLng(boundaries.southwest.latitude + latSpan * random.nextDouble(), boundaries.southwest.longitude + lngSpan * random.nextDouble());
+        return new LatLng(getBounds().southwest.latitude + latSpan * random.nextDouble(), getBounds().southwest.longitude + lngSpan * random.nextDouble());
     };
 
     // Parceling
     public Country(Parcel in) {
         name = in.readString();
         ISOCode = in.readString();
-        boundaries = in.readParcelable(LatLngBounds.class.getClassLoader());
+        bounds = in.readParcelable(LatLngBounds.class.getClassLoader());
     }
 
     @Override
@@ -66,7 +70,7 @@ public class Country implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(ISOCode);
-        dest.writeParcelable(boundaries, flags);
+        dest.writeParcelable(bounds, flags);
     }
 
     public static final Parcelable.Creator<Country> CREATOR = new Parcelable.Creator<Country>() {
