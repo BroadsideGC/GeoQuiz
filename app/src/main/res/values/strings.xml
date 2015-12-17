@@ -18,4 +18,8 @@
     <string name="done">Done</string>
     <string name="Minus">-</string>
     <string name="Plus">+</string>
+    <string name="Yes">YES</string>
+    <string name="No">NO</string>
+    <string name="Return">Return?</string>
+    <string name="Exit">Press once again to exit!</string>
 </resources>

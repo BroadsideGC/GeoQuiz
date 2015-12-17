@@ -137,6 +137,7 @@ public class ChooseMenu extends Activity {
         Round game = new Round(stages, new Country[]{GeoSearch.getInstance().getCountry(isoCodes.get(id))});
         intent.putExtra(GameScreen.BUNDLE_KEY_GAME, game);
         startActivity(intent);
+        finish();
     }
 
     @Override

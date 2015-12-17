@@ -11,10 +11,8 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.games.Game;
 import com.google.android.gms.maps.OnStreetViewPanoramaReadyCallback;
 import com.google.android.gms.maps.StreetViewPanorama;
 import com.google.android.gms.maps.StreetViewPanoramaFragment;
@@ -83,8 +81,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         }
 
         textViewScore = (TextView) findViewById(R.id.score);
-        textViewScore.setText(String.format(getString(R.string.score), game.getStagesCount() - game.getStagesRemainingCount() + 1, game.getStagesCount(), game.score()));
-
+        textViewScore.setText(String.format(getString(R.string.score), game.getStagesCount() - game.getStagesRemainingCount(), game.getStagesCount(), game.score()));
         StreetViewPanoramaFragment streetViewPanoramaFragment = (StreetViewPanoramaFragment) getFragmentManager().findFragmentById(R.id.streetviewpanorama);
         streetViewPanoramaFragment.getStreetViewPanoramaAsync(this);
     }
@@ -204,6 +201,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
             Intent intent = new Intent(this, EndGame.class);
             intent.putExtra(BUNDLE_KEY_GAME, game);
             startActivity(intent);
+            finish();
         } else {
             textViewScore.setText(String.format(getString(R.string.score), game.getStagesCount() - game.getStagesRemainingCount() + 1, game.getStagesCount(), game.score()));
             curStage = game.nextStage();
@@ -234,5 +232,33 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         });
         alertDialogBuilder.setCancelable(false);
         alertDialogBuilder.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        openReturnDialog();
+    }
+
+    private void openReturnDialog() {
+        AlertDialog.Builder quitDialog = new AlertDialog.Builder(
+                GameScreen.this);
+        quitDialog.setTitle(getString(R.string.Return));
+
+        quitDialog.setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(GameScreen.this, ChooseMenu.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        quitDialog.setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        quitDialog.show();
     }
 }

@@ -87,9 +87,11 @@ public class MapDialog extends DialogFragment {
                     reset();
                     gameScreen.startNewStage();
                 } else {
-                    isStageEnd = true;
                     addMarkersGameOver();
-                    confirmAnswer.setText(getString(R.string.next));
+                    if (userCoordinates != null) {
+                        isStageEnd = true;
+                        confirmAnswer.setText(getString(R.string.next));
+                    }
                 }
             }
         });
@@ -137,7 +139,6 @@ public class MapDialog extends DialogFragment {
     }
 
 
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -182,8 +183,10 @@ public class MapDialog extends DialogFragment {
 
         // Конец игры
         if (isStageEnd) {
-            this.isStageEnd = true;
             addMarkersGameOver();
+            if (this.userCoordinates != null) {
+                this.isStageEnd = true;
+            }
             if (confirmAnswer != null) {
                 confirmAnswer.setText(getString(R.string.next));
             }

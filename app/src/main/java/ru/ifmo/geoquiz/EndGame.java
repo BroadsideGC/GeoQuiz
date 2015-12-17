@@ -56,5 +56,10 @@ public class EndGame extends AppCompatActivity {
     public void backToMenu(View view) {
         Intent intent = new Intent(this, MainMenu.class);
         startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }
