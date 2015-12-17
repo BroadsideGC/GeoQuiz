@@ -16,4 +16,6 @@
     <string name="new_game">New game</string>
     <string name="choose_location">Choose location</string>
     <string name="done">Done</string>
+    <string name="Minus">-</string>
+    <string name="Plus">+</string>
 </resources>

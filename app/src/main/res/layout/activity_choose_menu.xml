@@ -46,7 +46,7 @@
                 android:layout_weight="0.5"
                 android:background="#FF0000"
                 android:onClick="roundMinus"
-                android:text="-"
+                android:text="@string/Minus"
                 android:textSize="26sp" />
 
             <Button
@@ -57,7 +57,7 @@
                 android:layout_weight="0.5"
                 android:background="#339933"
                 android:onClick="roundPlus"
-                android:text="+"
+                android:text="@string/Plus"
                 android:textSize="26sp" />
         </LinearLayout>
 
