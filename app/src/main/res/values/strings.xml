@@ -16,11 +16,11 @@
     <string name="new_game">New game</string>
     <string name="choose_location">Choose location</string>
     <string name="done">Done</string>
-    <string name="Minus">-</string>
-    <string name="Plus">+</string>
-    <string name="Yes">YES</string>
-    <string name="No">NO</string>
-    <string name="Return">Return?</string>
-    <string name="Exit">Press once again to exit!</string>
+    <string name="minus">-</string>
+    <string name="plus">+</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="wanna_return">Do you want to return?</string>
+    <string name="exit">Press once again to exit!</string>
     <string name="demo_game">Demo game</string>
 </resources>

@@ -33,23 +33,20 @@ public class MapDialog extends DialogFragment {
     public static final String BUNDLE_KEY_USER_COORDINATES = "userCoordinates";
     public static final String BUNDLE_KEY_CAMERA_POSITION = "cameraPosition";
 
-    // Фрагмент с картой
     private SupportMapFragment fragment;
-    // Карта
     private GoogleMap map;
-    // Координаты точки, которую угадываем
+    // Original (generated) point
     private LatLng originalCoordinates;
-    // Координаты точки, которую ставим
+    // User point
     private LatLng userCoordinates;
-    // Узнали ли истинную точку
+    // Answer was shown
     private Boolean isStageEnd = false;
-    // Кнопка подтверждения ответа/перехода к следующему раунду
+
     Button confirmAnswer;
-    // Игровой активити
     GameScreen gameScreen;
-    // Маркер настоящей точки
+
+    // Markers (default and custom blue)
     MarkerOptions markerOriginal = new MarkerOptions();
-    // Маркер пользовательской точки
     MarkerOptions markerUser = new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
     @Override
@@ -68,6 +65,9 @@ public class MapDialog extends DialogFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        /*
+         * Trying to restore markers on maps
+         */
         if (getArguments() != null) {
             restoreMarkers(getArguments());
         } else {
@@ -138,7 +138,6 @@ public class MapDialog extends DialogFragment {
         }
     }
 
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -155,12 +154,18 @@ public class MapDialog extends DialogFragment {
         this.originalCoordinates = originalCoordinates;
     }
 
+    /*
+     * Resets fields
+     */
     private void reset() {
         isStageEnd = false;
         userCoordinates = null;
         originalCoordinates = null;
     }
 
+    /*
+     * Restore and add markers on maps
+     */
     private void restoreMarkers(Bundle savedState) {
         boolean isStageEnd = savedState.getBoolean(BUNDLE_KEY_IS_STAGE_END);
         LatLng originalCoordinates = savedState.getParcelable(BUNDLE_KEY_ORIGINAL_COORDINATES);
@@ -181,7 +186,7 @@ public class MapDialog extends DialogFragment {
             }
         }
 
-        // Конец игры
+        // Answer was shown -> go to the next stage
         if (isStageEnd) {
             addMarkersGameOver();
             if (this.userCoordinates != null) {
@@ -199,6 +204,9 @@ public class MapDialog extends DialogFragment {
         }
     }
 
+    /*
+     * Show markers for points
+     */
     private void addMarkersGameOver() {
         if (originalCoordinates == null || userCoordinates == null || map == null) {
             Log.e(LOG_TAG, "Map or coordinates is null!");
@@ -211,6 +219,9 @@ public class MapDialog extends DialogFragment {
         }
     }
 
+    /*
+     * Create bundle with markers and map state
+     */
     private Bundle getBundleState() {
         if (originalCoordinates == null && userCoordinates == null) {
             return null;

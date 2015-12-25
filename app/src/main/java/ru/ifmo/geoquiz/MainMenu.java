@@ -7,12 +7,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.games.Game;
 import com.google.android.gms.maps.model.LatLng;
 
 import ru.ifmo.geoquiz.model.Round;
 import ru.ifmo.geoquiz.model.Stage;
-import ru.ifmo.geoquiz.utils.GeoSearch;
 
 public class MainMenu extends Activity {
 
@@ -22,6 +20,8 @@ public class MainMenu extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+        // Start new game
         Button btnNewGame = (Button) findViewById(R.id.new_game);
         btnNewGame.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -31,6 +31,7 @@ public class MainMenu extends Activity {
             }
         });
 
+        // Start demo game (for presentation)
         Button btnDemoGame = (Button) findViewById(R.id.demo_game);
         btnDemoGame.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +56,7 @@ public class MainMenu extends Activity {
         if (backPressed + 2000 > System.currentTimeMillis()) {
             super.onBackPressed();
         } else {
-            Toast.makeText(getBaseContext(), getString(R.string.Exit),
+            Toast.makeText(getBaseContext(), getString(R.string.exit),
                     Toast.LENGTH_SHORT).show();
         }
         backPressed = System.currentTimeMillis();

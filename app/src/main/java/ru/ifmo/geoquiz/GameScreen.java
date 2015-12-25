@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,7 +29,6 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
     public static final String BUNDLE_KEY_DIALOG_ARGUMENTS = "dialogArguments";
     public static final String BUNDLE_KEY_GAME = "game";
     public static final String BUNDLE_KEY_POINT = "point";
-    public static final String BUNDLE_KEY_SCORE = "score";
 
     private Handler checkHandler = new Handler();
     private Round game;
@@ -55,6 +53,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         setContentView(R.layout.activity_game_screen);
 
         dialog = new MapDialog();
+        // Pass arguments to dialog (e. g. after rotate)
         if (savedInstanceState != null) {
             dialogArguments = savedInstanceState.getBundle(BUNDLE_KEY_DIALOG_ARGUMENTS);
         }
@@ -82,6 +81,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
 
         textViewScore = (TextView) findViewById(R.id.score);
         textViewScore.setText(String.format(getString(R.string.score), game.getStagesCount() - game.getStagesRemainingCount(), game.getStagesCount(), game.score()));
+
         StreetViewPanoramaFragment streetViewPanoramaFragment = (StreetViewPanoramaFragment) getFragmentManager().findFragmentById(R.id.streetviewpanorama);
         streetViewPanoramaFragment.getStreetViewPanoramaAsync(this);
     }
@@ -128,11 +128,16 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         }
     }
 
+    /*
+     * Go to next random point in current country
+     * If originalPoint is not null -> go to this point
+     */
     public void moveToRandomPoint() {
         if (stopSearching) {
             return;
         }
 
+        // Disable map button and show search progress
         mapButton.setEnabled(false);
         if (progressSearching == null) {
             progressSearching = panoWaitingDialog();
@@ -143,12 +148,11 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
             }
         }
 
+        // Start 10s timer - timeout
         if (timerSearching == null) {
             timerSearching = new CountDownTimer(MAX_SEARCHING_TIME, 1000) {
                 @Override
-                public void onTick(long millisUntilFinished) {
-                    Log.d(LOG_TAG, "Tick...");
-                }
+                public void onTick(long millisUntilFinished) { }
 
                 @Override
                 public void onFinish() {
@@ -157,23 +161,33 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
                     }
                 }
             };
-            Log.d(LOG_TAG, "Start searching...");
             timerSearching.start();
         }
 
-        final LatLng rndPoint = curStage.getOriginalPoint() == null ? curStage.getCountry().getRandomPointInCountry() : curStage.getOriginalPoint();
-        panorama.setPosition(rndPoint, RADIUS);
-
-        if (curStage.getCountry() != null) {
-            Log.d(LOG_TAG, "Pano set in " + curStage.getCountry().getISOCode() + " at " + rndPoint.toString());
+        // originalPoint is not null -> demo-mode -> go to there
+        if (curStage.getOriginalPoint() != null) {
+            panorama.setPosition(curStage.getOriginalPoint(), RADIUS);
+            mapButton.setEnabled(true);
+            if (progressSearching.isShowing()) {
+                progressSearching.dismiss();
+            }
+            if (timerSearching != null) {
+                timerSearching.cancel();
+            }
+            return;
         }
 
+        // Random point
+        final LatLng rndPoint = curStage.getCountry().getRandomPointInCountry();
+        // Trying to set panorama in this point with radius = 50km
+        panorama.setPosition(rndPoint, RADIUS);
+
+        // Check panorama after 500ms
         checkHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                System.out.println("Check...");
                 if (panorama.getLocation() != null && panorama.getLocation().links != null) {
-                    Log.d(LOG_TAG, "Pano found in " + rndPoint.toString() + ". Original point " + panorama.getLocation().position);
+                    // Panorama is valid -> enable controls
                     curStage.setOriginalPoint(panorama.getLocation().position);
                     mapButton.setEnabled(true);
                     if (progressSearching.isShowing()) {
@@ -183,23 +197,30 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
                         timerSearching.cancel();
                     }
                 } else {
-                    Log.d(LOG_TAG, "No panos found in " + rndPoint.toString());
+                    // Panorama is invalid -> let's try again
                     moveToRandomPoint();
                 }
             }
         }, 500);
     }
 
+    /*
+     * Get current game-stage
+     */
     public Stage getCurStage() {
         return curStage;
     }
 
+    /*
+     * Start new game-stage
+     */
     public void startNewStage() {
         dialogArguments = null;
         timerSearching = null;
         stopSearching = false;
 
         if (game.getStagesRemainingCount() == 0) {
+            // Show final map with all markers
             Intent intent = new Intent(this, EndGame.class);
             intent.putExtra(BUNDLE_KEY_GAME, game);
             startActivity(intent);
@@ -212,6 +233,9 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         }
     }
 
+    /*
+     * Build progressDialog (while setting panorama)
+     */
     private ProgressDialog panoWaitingDialog() {
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.searching));
@@ -219,6 +243,9 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         return progressDialog;
     }
 
+    /*
+     * Show dialog if panorama was not found
+     */
     private void searchFail() {
         stopSearching = true;
         if (progressSearching != null && progressSearching.isShowing()) {
@@ -239,15 +266,10 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
 
     @Override
     public void onBackPressed() {
-        openReturnDialog();
-    }
+        AlertDialog.Builder exitDialog = new AlertDialog.Builder(GameScreen.this);
+        exitDialog.setTitle(getString(R.string.wanna_return));
 
-    private void openReturnDialog() {
-        AlertDialog.Builder quitDialog = new AlertDialog.Builder(
-                GameScreen.this);
-        quitDialog.setTitle(getString(R.string.Return));
-
-        quitDialog.setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
+        exitDialog.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(GameScreen.this, ChooseMenu.class);
@@ -256,12 +278,12 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
             }
         });
 
-        quitDialog.setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
+        exitDialog.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }
         });
 
-        quitDialog.show();
+        exitDialog.show();
     }
 }
