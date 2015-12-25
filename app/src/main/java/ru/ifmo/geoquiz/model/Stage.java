@@ -18,6 +18,7 @@ public class Stage implements Parcelable {
 
     public Stage(LatLng originalPoint) {
         this.originalPoint = originalPoint;
+        this.pts = 0;
     }
 
     public Stage(LatLng originalPoint, LatLng userPoint) {

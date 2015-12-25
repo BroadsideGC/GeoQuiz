@@ -22,4 +22,5 @@
     <string name="No">NO</string>
     <string name="Return">Return?</string>
     <string name="Exit">Press once again to exit!</string>
+    <string name="demo_game">Demo game</string>
 </resources>

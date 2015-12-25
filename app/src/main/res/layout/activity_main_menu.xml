@@ -29,5 +29,21 @@
             android:text="@string/new_game"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/demo_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_below="@+id/new_game"
+            android:background="@drawable/btn_menu_selector"
+            android:layout_marginTop="10dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            android:paddingTop="15dp"
+            android:text="@string/demo_game"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
     </RelativeLayout>
 </FrameLayout>

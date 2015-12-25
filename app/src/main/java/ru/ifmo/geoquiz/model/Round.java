@@ -43,8 +43,10 @@ public class Round implements Parcelable {
 
     public Stage nextStage() {
         curStageIndex++;
-        this.stages[curStageIndex] = new Stage();
-        this.stages[curStageIndex].setCountry(chooseCountry());
+        if (this.stages[curStageIndex] == null) {
+            this.stages[curStageIndex] = new Stage();
+            this.stages[curStageIndex].setCountry(chooseCountry());
+        }
         return this.stages[curStageIndex];
     }
 

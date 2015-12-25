@@ -161,10 +161,12 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
             timerSearching.start();
         }
 
-        final LatLng rndPoint = curStage.getCountry().getRandomPointInCountry();
+        final LatLng rndPoint = curStage.getOriginalPoint() == null ? curStage.getCountry().getRandomPointInCountry() : curStage.getOriginalPoint();
         panorama.setPosition(rndPoint, RADIUS);
 
-        Log.d(LOG_TAG, "Pano set in " + curStage.getCountry().getISOCode() + " at " + rndPoint.toString());
+        if (curStage.getCountry() != null) {
+            Log.d(LOG_TAG, "Pano set in " + curStage.getCountry().getISOCode() + " at " + rndPoint.toString());
+        }
 
         checkHandler.postDelayed(new Runnable() {
             @Override
@@ -205,6 +207,7 @@ public class GameScreen extends FragmentActivity implements OnStreetViewPanorama
         } else {
             textViewScore.setText(String.format(getString(R.string.score), game.getStagesCount() - game.getStagesRemainingCount() + 1, game.getStagesCount(), game.score()));
             curStage = game.nextStage();
+
             moveToRandomPoint();
         }
     }
