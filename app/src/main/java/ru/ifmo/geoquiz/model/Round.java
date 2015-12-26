@@ -1,5 +1,8 @@
 package ru.ifmo.geoquiz.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,6 +11,7 @@ import ru.ifmo.geoquiz.utils.GeoSearch;
 public class Round implements Parcelable {
 
     public static final Integer MAX_STAGES = 10;
+    public static final List<String> preferredCountries = Arrays.asList("AU", "AT", "BE", "BR", "CA", "CH", "CZ", "DE", "ES", "FI", "LV", "LT", "FR", "GB", "GR", "HU", "IL", "IT", "JP", "NL", "NO", "PL", "SE", "TR", "UA", "US", "EE");
 
     private GeoSearch geoSearch;
 
@@ -33,7 +37,11 @@ public class Round implements Parcelable {
         if (availableCountries.length > 0) {
             this.availableCountries = availableCountries;
         } else {
-            this.availableCountries = geoSearch.getAllCountries();
+            ArrayList<Country> countries = new ArrayList<>();
+            for (String code : preferredCountries) {
+                countries.add(geoSearch.getCountry(code));
+            }
+            this.availableCountries = countries.toArray(new Country[countries.size()]);
         }
     }
 

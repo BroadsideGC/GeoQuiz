@@ -43,7 +43,7 @@ public class EndGame extends AppCompatActivity {
 
         Round game = (Round) getIntent().getExtras().get(GameScreen.BUNDLE_KEY_GAME);
 
-        TextView score = (TextView) findViewById(R.id.textView);
+        TextView score = (TextView) findViewById(R.id.final_score);
         score.setText(String.format(getString(R.string.your_score), game.score()));
 
         fragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.endMap);

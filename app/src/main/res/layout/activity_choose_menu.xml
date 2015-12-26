@@ -24,7 +24,7 @@
         android:weightSum="1">
 
         <TextView
-            android:id="@+id/roundsCount"
+            android:id="@+id/rounds_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
@@ -39,24 +39,22 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/buttonMinus"
+                android:id="@+id/button_minus"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:background="#FF0000"
-                android:onClick="roundMinus"
                 android:text="@string/minus"
                 android:textSize="26sp" />
 
             <Button
-                android:id="@+id/buttonPlus"
+                android:id="@+id/button_plus"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:background="#339933"
-                android:onClick="roundPlus"
                 android:text="@string/plus"
                 android:textSize="26sp" />
         </LinearLayout>

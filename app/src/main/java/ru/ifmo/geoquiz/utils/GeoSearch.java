@@ -21,7 +21,6 @@ public class GeoSearch {
 
     public static final String LOG_TAG = "GeoSearch";
 
-    // База данных
     private SQLiteDatabase db = null;
     private GeoSearch() {
         this.context = App.getContext();
@@ -40,6 +39,9 @@ public class GeoSearch {
         return instance;
     }
 
+    /*
+     * Get two letter country code by ID (in DB)
+     */
     public String getISOByID(Integer countryID) {
         Cursor selectISOCode = db.query(DatabaseHelper.COUNTRIES_TABLE, new String[]{DatabaseHelper.COUNTRY_ISO_CODE_FIELD}, "_id = ?", new String[]{countryID.toString()}, null, null, null);
         if (selectISOCode.getCount() > 0) {
@@ -52,10 +54,16 @@ public class GeoSearch {
         }
     }
 
+    /*
+     * Get country bounds by ID
+     */
     public LatLngBounds getLatLngBounds(Integer countryID) {
         return getLatLngBounds(getISOByID(countryID));
     }
 
+    /*
+     * Get country bounds by two letter country code
+     */
     public LatLngBounds getLatLngBounds(String isoCode) {
         Cursor boundaries = db.query(DatabaseHelper.BOUNDARIES_TABLE, new String[]{DatabaseHelper.BOUNDARY_LATITUDE_FIELD, DatabaseHelper.BOUNDARY_LONGITUDE_FIELD}, DatabaseHelper.BOUNDARY_ISO_CODE_FIELD + " = ?", new String[]{isoCode}, null, null, null);
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -68,6 +76,9 @@ public class GeoSearch {
         return builder.build();
     }
 
+    /*
+     * Get country by two letter country code
+     */
     public Country getCountry(String isoCode) {
         Cursor selectCountry = db.query(DatabaseHelper.COUNTRIES_TABLE, new String[]{DatabaseHelper.COUNTRY_ADMIN_NAME_FIELD, DatabaseHelper.COUNTRY_ISO_CODE_FIELD}, DatabaseHelper.COUNTRY_ISO_CODE_FIELD + " = ?", new String[]{isoCode}, null, null, null);
         if (selectCountry.getCount() > 0) {
@@ -82,10 +93,16 @@ public class GeoSearch {
         }
     }
 
+    /*
+     * Get country by ID
+     */
     public Country getCountry(Integer countryID) {
         return getCountry(getISOByID(countryID));
     }
 
+    /*
+     * Get all countries
+     */
     public Country[] getAllCountries() {
         ArrayList<Country> out = new ArrayList<>();
         Cursor countries = db.query(DatabaseHelper.COUNTRIES_TABLE, new String[]{DatabaseHelper.COUNTRY_ADMIN_NAME_FIELD, DatabaseHelper.COUNTRY_ISO_CODE_FIELD}, null, null, null, null, null);
