@@ -24,4 +24,5 @@
     <string name="exit">Press once again to exit!</string>
     <string name="demo_game">Demo game</string>
     <string name="all_world">All world</string>
+    <string name="guess_distance" formatted="false">Your guess was %d km from the correct location.</string>
 </resources>

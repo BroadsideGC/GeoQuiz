@@ -3,6 +3,7 @@ package ru.ifmo.geoquiz;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -211,8 +213,13 @@ public class MapDialog extends DialogFragment {
         if (originalCoordinates == null || userCoordinates == null || map == null) {
             Log.e(LOG_TAG, "Map or coordinates is null!");
         } else {
+            // Original location
             map.addMarker(markerOriginal.position(originalCoordinates));
-            map.addMarker(markerUser.position(userCoordinates));
+
+            // User location
+            float[] res = new float[3];
+            Location.distanceBetween(originalCoordinates.latitude, originalCoordinates.longitude, userCoordinates.latitude, userCoordinates.longitude, res);
+            map.addMarker(markerUser.position(userCoordinates).title(String.format(getString(R.string.guess_distance), (int) (res[0] / 1000)))).showInfoWindow();
 
             PolylineOptions line = new PolylineOptions().add(originalCoordinates).add(userCoordinates).color(Color.RED);
             map.addPolyline(line);
