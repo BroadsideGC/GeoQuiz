@@ -9,33 +9,72 @@ import java.util.Random;
 
 import ru.ifmo.geoquiz.utils.GeoSearch;
 
+/**
+ * Model "Country".
+ */
 public class Country implements Parcelable {
+    /**
+     * Country name
+     */
     private String name;
+    /**
+     * Country ISO code
+     * https://en.wikipedia.org/wiki/ISO_3166-1
+     */
     private String ISOCode;
+    /**
+     * Country bounds
+     */
     private LatLngBounds bounds;
 
+    /**
+     * Constructor for Country.
+     * @param name country name
+     * @param iso country code
+     * @param bounds country bounds
+     */
     public Country(String name, String iso, LatLngBounds bounds) {
         this.name = name;
         this.ISOCode = iso;
         this.bounds = bounds;
     }
 
+    /**
+     * Get country name.
+     * @return {@link String} country name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set country name.
+     * @param name country name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Get two-letter country code.
+     * @return {@link String} short country code
+     */
     public String getISOCode() {
         return ISOCode;
     }
 
+    /**
+     * Set short country code.
+     * @param ISOCode country code
+     */
     public void setISOCode(String ISOCode) {
         this.ISOCode = ISOCode;
     }
 
+    /**
+     * Get country bounds.
+     * @return {@link com.google.android.gms.maps.model.LatLngBounds} country bounds
+     */
     public LatLngBounds getBounds() {
         if (bounds == null) {
             bounds = GeoSearch.getInstance().getLatLngBounds(ISOCode);
@@ -43,10 +82,18 @@ public class Country implements Parcelable {
         return bounds;
     }
 
+    /**
+     * Set country bounds.
+     * @param bounds {@link com.google.android.gms.maps.model.LatLngBounds} country bounds
+     */
     public void setBounds(LatLngBounds bounds) {
         this.bounds = bounds;
     }
 
+    /**
+     * Return random point in country bounds.
+     * @return {@link com.google.android.gms.maps.model.LatLngBounds} random point
+     */
     public LatLng getRandomPointInCountry() {
         Double lngSpan = getBounds().northeast.longitude - getBounds().southwest.longitude;
         Double latSpan = getBounds().northeast.latitude - getBounds().southwest.latitude;

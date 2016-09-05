@@ -11,21 +11,43 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * Helper for using DB features.
+ */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    /**
+     * Tag for logs
+     */
     private static final String LOG_TAG = "GeoSearchDBHelper";
+    /**
+     * DB filename
+     */
     private static final String DB_NAME = "geo.db";
+    /**
+     * DB version
+     */
     private static final Integer DB_VERSION = 1;
-    private Context context = null;
 
+    /**
+     * Countries table
+     */
     public static final String COUNTRIES_TABLE = "countries";
     public static final String COUNTRY_ISO_CODE_FIELD = "iso";
     public static final String COUNTRY_ADMIN_NAME_FIELD = "admin";
 
+    /**
+     * Boundaries table
+     */
     public static final String BOUNDARIES_TABLE = "borders";
     public static final String BOUNDARY_ISO_CODE_FIELD = "iso_code";
     public static final String BOUNDARY_LATITUDE_FIELD = "lat";
     public static final String BOUNDARY_LONGITUDE_FIELD = "lng";
+
+    /**
+     * Context
+     */
+    private Context context = null;
 
 
     public DatabaseHelper(Context context) {
@@ -39,6 +61,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super.onOpen(db);
     }
 
+    /**
+     * Create database.
+     */
     public void create() {
         if (!check()) {
             this.getReadableDatabase();
@@ -74,6 +99,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Check existing DB.
+     * @return true if DB exists otherwise false
+     */
     public boolean check() {
         SQLiteDatabase db = null;
         try {

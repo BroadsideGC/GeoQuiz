@@ -3,7 +3,6 @@ package ru.ifmo.geoquiz.utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -14,6 +13,9 @@ import ru.ifmo.geoquiz.App;
 import ru.ifmo.geoquiz.db.DatabaseHelper;
 import ru.ifmo.geoquiz.model.Country;
 
+/**
+ * Class that contains operations with DB.
+ */
 public class GeoSearch {
 
     private static GeoSearch instance;
@@ -32,6 +34,10 @@ public class GeoSearch {
         db = dbHelper.getReadableDatabase();
     }
 
+    /**
+     * Return current instance of GeoSearch.
+     * @return {@link GeoSearch} current instance
+     */
     public static GeoSearch getInstance() {
         if (instance == null) {
             instance = new GeoSearch();
@@ -39,8 +45,10 @@ public class GeoSearch {
         return instance;
     }
 
-    /*
+    /**
      * Get two letter country code by ID (in DB)
+     * @param countryID country ID in database
+     * @return {@link String} ISO-code
      */
     public String getISOByID(Integer countryID) {
         Cursor selectISOCode = db.query(DatabaseHelper.COUNTRIES_TABLE, new String[]{DatabaseHelper.COUNTRY_ISO_CODE_FIELD}, "_id = ?", new String[]{countryID.toString()}, null, null, null);
@@ -54,15 +62,19 @@ public class GeoSearch {
         }
     }
 
-    /*
+    /**
      * Get country bounds by ID
+     * @param countryID country ID in database
+     * @return {@link com.google.android.gms.maps.model.LatLngBounds} country bounds
      */
     public LatLngBounds getLatLngBounds(Integer countryID) {
         return getLatLngBounds(getISOByID(countryID));
     }
 
-    /*
+    /**
      * Get country bounds by two letter country code
+     * @param isoCode two-letter country code
+     * @return {@link com.google.android.gms.maps.model.LatLngBounds} country bounds
      */
     public LatLngBounds getLatLngBounds(String isoCode) {
         Cursor boundaries = db.query(DatabaseHelper.BOUNDARIES_TABLE, new String[]{DatabaseHelper.BOUNDARY_LATITUDE_FIELD, DatabaseHelper.BOUNDARY_LONGITUDE_FIELD}, DatabaseHelper.BOUNDARY_ISO_CODE_FIELD + " = ?", new String[]{isoCode}, null, null, null);
@@ -76,8 +88,10 @@ public class GeoSearch {
         return builder.build();
     }
 
-    /*
+    /**
      * Get country by two letter country code
+     * @param isoCode ISO-code
+     * @return {@link Country} country
      */
     public Country getCountry(String isoCode) {
         Cursor selectCountry = db.query(DatabaseHelper.COUNTRIES_TABLE, new String[]{DatabaseHelper.COUNTRY_ADMIN_NAME_FIELD, DatabaseHelper.COUNTRY_ISO_CODE_FIELD}, DatabaseHelper.COUNTRY_ISO_CODE_FIELD + " = ?", new String[]{isoCode}, null, null, null);
@@ -93,15 +107,18 @@ public class GeoSearch {
         }
     }
 
-    /*
+    /**
      * Get country by ID
+     * @param countryID country ID
+     * @return {@link Country} country
      */
     public Country getCountry(Integer countryID) {
         return getCountry(getISOByID(countryID));
     }
 
-    /*
-     * Get all countries
+    /**
+     * Get all countries from database.
+     * @return array with countries
      */
     public Country[] getAllCountries() {
         ArrayList<Country> out = new ArrayList<>();

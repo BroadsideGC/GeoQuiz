@@ -12,6 +12,9 @@ import com.google.android.gms.maps.model.LatLng;
 import ru.ifmo.geoquiz.model.Round;
 import ru.ifmo.geoquiz.model.Stage;
 
+/**
+ * Main game screen
+ */
 public class MainMenu extends Activity {
 
     private static long backPressed;

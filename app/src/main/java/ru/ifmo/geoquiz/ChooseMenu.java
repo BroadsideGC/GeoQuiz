@@ -20,6 +20,9 @@ import ru.ifmo.geoquiz.model.Country;
 import ru.ifmo.geoquiz.model.Round;
 import ru.ifmo.geoquiz.utils.GeoSearch;
 
+/**
+ * Choose game screen
+ */
 public class ChooseMenu extends AppCompatActivity {
     public static final String BUNDLE_KEY_NAMES = "names";
     public static final String BUNDLE_KEY_ISO_CODES = "isoCodes";
@@ -89,6 +92,9 @@ public class ChooseMenu extends AppCompatActivity {
         return getCountriesTask;
     }
 
+    /**
+     * Adapter for recycler with countries
+     */
     private class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
         private final ArrayList<String> items;
         private final LayoutInflater li;
@@ -135,8 +141,10 @@ public class ChooseMenu extends AppCompatActivity {
         }
     }
 
-    /*
-     * Start game in selected country
+
+    /**
+     * Start game in selected country.
+     * @param id ID for chosen country
      */
     private void startGame(int id) {
         Intent intent = new Intent(this, GameScreen.class);
@@ -181,7 +189,7 @@ public class ChooseMenu extends AppCompatActivity {
         outState.putInt(BUNDLE_KEY_STAGES, stagesCount);
     }
 
-    /*
+    /**
      * Get countries from DB and create list in async task
      */
     class GetCountriesTask extends AsyncTask<Void, Void, Country[]> {

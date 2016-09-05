@@ -8,23 +8,40 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import ru.ifmo.geoquiz.utils.GeoSearch;
 
+/**
+ * Model "Round".
+ */
 public class Round implements Parcelable {
 
+    /**
+     * Max stages count per game round.
+     */
     public static final Integer MAX_STAGES = 10;
+    /**
+     * Available countries.
+     */
     public static final List<String> preferredCountries = Arrays.asList("AU", "AT", "BE", "BR", "CA", "CH", "CZ", "DE", "ES", "FI", "LV", "LT", "FR", "GB", "GR", "HU", "IL", "IT", "JP", "NL", "NO", "PL", "SE", "TR", "UA", "US", "EE");
 
     private GeoSearch geoSearch;
-
     private final Integer stagesCount;
     private Stage[] stages;
     private Integer curStageIndex;
     private Integer score;
     private Country[] availableCountries;
 
+    /**
+     * Get game stages for current round.
+     * @return list of stages
+     */
     public Stage[] getStages() {
         return stages;
     }
 
+    /**
+     * Constructor for Round.
+     * @param stagesCount max stages count
+     * @param availableCountries list of available countries
+     */
     public Round(int stagesCount, Country[] availableCountries) {
         geoSearch = GeoSearch.getInstance();
 
@@ -45,10 +62,18 @@ public class Round implements Parcelable {
         }
     }
 
+    /**
+     * Constructor for Round.
+     * @param stagesCount max stages count
+     */
     public Round(int stagesCount) {
         this(stagesCount, new Country[]{});
     }
 
+    /**
+     * Activate and return next game stage.
+     * @return {@link Stage} next stage
+     */
     public Stage nextStage() {
         curStageIndex++;
         if (this.stages[curStageIndex] == null) {
@@ -58,6 +83,10 @@ public class Round implements Parcelable {
         return this.stages[curStageIndex];
     }
 
+    /**
+     * Get current game stage.
+     * @return {@link Stage} current stage
+     */
     public Stage getCurStage() {
         if (curStageIndex < 0) {
             return null;
@@ -65,6 +94,10 @@ public class Round implements Parcelable {
         return this.stages[curStageIndex];
     }
 
+    /**
+     * Calculate and get game score.
+     * @return {@link Integer} game score
+     */
     public Integer score() {
         this.score = 0;
         for (Stage s: stages) {
@@ -75,21 +108,37 @@ public class Round implements Parcelable {
         return this.score;
     }
 
+    /**
+     * Choose random country from available countries list.
+     * @return {@link Country} country
+     */
     private Country chooseCountry() {
         Integer randomIndex = Math.abs(new Random().nextInt()) % availableCountries.length;
         return availableCountries[randomIndex];
     }
 
+    /**
+     * Invalidate last stage.
+     * It just decrements stages counter.
+     */
     public void invalidateLastStage() {
         if (curStageIndex >= 0) {
             curStageIndex--;
         }
     }
 
+    /**
+     * Get remaining stages count for current round.
+     * @return {@link Integer} remaining stages count
+     */
     public Integer getStagesRemainingCount() {
         return stagesCount - curStageIndex - 1;
     }
 
+    /**
+     * Get max stages count for current round.
+     * @return {@link Integer} max stages count
+     */
     public Integer getStagesCount() {
         return stagesCount;
     }

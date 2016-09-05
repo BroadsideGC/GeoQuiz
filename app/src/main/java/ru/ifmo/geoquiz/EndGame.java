@@ -17,13 +17,20 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import ru.ifmo.geoquiz.model.Round;
 import ru.ifmo.geoquiz.model.Stage;
 
+/**
+ * End game screen
+ */
 public class EndGame extends AppCompatActivity {
 
     private GoogleMap map;
     private SupportMapFragment fragment;
-    // Original point
+    /**
+     * Original point
+     */
     MarkerOptions markerOriginal = new MarkerOptions();
-    // User point
+    /**
+     * User point
+     */
     MarkerOptions markerUser = new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
     @Override
@@ -57,8 +64,9 @@ public class EndGame extends AppCompatActivity {
         }
     }
 
-    /*
-     * Show markers for points
+    /**
+     * Show markers for given stage on final map.
+     * @param s stage
      */
     private void addMarkersGameOver(Stage s) {
         map.addMarker(markerOriginal.position(s.getOriginalPoint()));

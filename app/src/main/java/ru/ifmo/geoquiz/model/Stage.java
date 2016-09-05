@@ -6,27 +6,60 @@ import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Model "Stage".
+ */
 public class Stage implements Parcelable {
+    /**
+     * Point on map that we generated for user.
+     */
     private LatLng originalPoint;
+    /**
+     * Point on map that user choose.
+     */
     private LatLng userPoint;
+    /**
+     * Points for stage.
+     */
     private Integer pts;
+    /**
+     * Country for current stage.
+     */
     private Country country;
 
+    /**
+     * Constructor for Stage.
+     */
     public Stage() {
         pts = 0;
     }
 
+    /**
+     * Constructor for Stage with given original point.
+     * @param originalPoint original point
+     */
     public Stage(LatLng originalPoint) {
         this.originalPoint = originalPoint;
         this.pts = 0;
     }
 
+    /**
+     * Constructor for Stage with given original point and user point.
+     * //WTF?
+     * @param originalPoint original point
+     * @param userPoint user point
+     */
     public Stage(LatLng originalPoint, LatLng userPoint) {
         this.originalPoint = originalPoint;
         this.userPoint = userPoint;
         this.pts = 0;
     }
 
+    /**
+     * Calculate points for current stage.
+     * It uses distance between original and user points and some magic coefficients.
+     * @return {@link Integer} final score for current stage
+     */
     public Integer score() {
         if (userPoint == null) {
             return 0;
@@ -37,26 +70,50 @@ public class Stage implements Parcelable {
         return pts;
     }
 
+    /**
+     * Get user point.
+     * @return {@link com.google.android.gms.maps.model.LatLng} user point
+     */
     public LatLng getUserPoint() {
         return userPoint;
     }
 
+    /**
+     * Set user point.
+     * @param userPoint user point
+     */
     public void setUserPoint(LatLng userPoint) {
         this.userPoint = userPoint;
     }
 
+    /**
+     * Get original point.
+     * @return {@link com.google.android.gms.maps.model.LatLng} original point
+     */
     public LatLng getOriginalPoint() {
         return originalPoint;
     }
 
+    /**
+     * Set original point.
+     * @param originalPoint original point
+     */
     public void setOriginalPoint(LatLng originalPoint) {
         this.originalPoint = originalPoint;
     }
 
+    /**
+     * Get country for current stage.
+     * @return {@link Country} current country
+     */
     public Country getCountry() {
         return country;
     }
 
+    /**
+     * Set country for current stage.
+     * @param country new country
+     */
     public void setCountry(Country country) {
         this.country = country;
     }

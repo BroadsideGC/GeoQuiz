@@ -26,7 +26,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-
+/**
+ * Dialog with map
+ */
 public class MapDialog extends DialogFragment {
     private static final String LOG_TAG = "MapDialog";
     public static final String BUNDLE_KEY_STATE = "state";
@@ -156,8 +158,8 @@ public class MapDialog extends DialogFragment {
         this.originalCoordinates = originalCoordinates;
     }
 
-    /*
-     * Resets fields
+    /**
+     * Reset fields
      */
     private void reset() {
         isStageEnd = false;
@@ -165,8 +167,9 @@ public class MapDialog extends DialogFragment {
         originalCoordinates = null;
     }
 
-    /*
+    /**
      * Restore and add markers on maps
+     * @param savedState saved state
      */
     private void restoreMarkers(Bundle savedState) {
         boolean isStageEnd = savedState.getBoolean(BUNDLE_KEY_IS_STAGE_END);
@@ -206,7 +209,7 @@ public class MapDialog extends DialogFragment {
         }
     }
 
-    /*
+    /**
      * Show markers for points
      */
     private void addMarkersGameOver() {
@@ -226,8 +229,9 @@ public class MapDialog extends DialogFragment {
         }
     }
 
-    /*
+    /**
      * Create bundle with markers and map state
+     * @return {@link Bundle} bundle with saved state
      */
     private Bundle getBundleState() {
         if (originalCoordinates == null && userCoordinates == null) {
